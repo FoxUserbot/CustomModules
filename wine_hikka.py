@@ -30,7 +30,7 @@ async def create_module(module_text, module_name):
                 api_key=str(base64.b64decode("c2stb3ItdjEtNjg1YzZiMDc2YjJhNDE4M2VkNTUzOWIyMTk3ZWY4MTk3YjkxYTE1ZDMxOTAxZjQ2YTQ5MTk0NTFjYzkxYzRmZQ==").decode('utf-8'))
             )
     response = await client_ai.chat.completions.create(
-                model="deepseek/deepseek-chat-v3-0324:free",
+                model="qwen/qwen3-235b-a22b-07-25:free",
                 messages=[{"role": "user", "content": prompt}]
             )
     return response.choices[0].message.content.replace("```python", "").replace("```", "")
