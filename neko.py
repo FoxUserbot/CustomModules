@@ -15,7 +15,7 @@ async def neko(client, message):
         resp = requests.get("https://nekos.best/api/v2/neko")
         data = resp.json()
         url = data["results"][0]["url"]
-        await client.send_photo(message.chat.id, photo=str(url))
+        await client.send_photo(message.chat.id, photo=str(url),message_thread_id=message.message_thread_id)
         await message.delete()
     except Exception as f:
         await message.edit(f"Oops..~\n{f}")
