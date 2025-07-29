@@ -24,7 +24,7 @@ async def tagallone(client, message):
     await message.delete()
     async for member in gg:
         string = f"{member.user.mention('*')} "
-        await client.send_message(chat_id, text=(f"||{string}|| | {text}"), disable_web_page_preview=True)
+        await client.send_message(chat_id, text=(f"||{string}|| | {text}"), disable_web_page_preview=True, message_thread_id=message.message_thread_id)
         try:
             delay = int(delay)
         except ValueError:
@@ -66,7 +66,7 @@ async def tagall(client, message):
     for member in icm:
         if int(l) == int(i):
             if int(limit) == (g - 1):
-                await client.send_message(chat_id, text=(f"{text}\n||{string}||"), disable_web_page_preview=True)
+                await client.send_message(chat_id, text=(f"{text}\n||{string}||"), disable_web_page_preview=True, message_thread_id=message.message_thread_id)
                 string = ""
                 limit = 0
             else:

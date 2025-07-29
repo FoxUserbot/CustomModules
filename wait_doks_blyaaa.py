@@ -16,7 +16,8 @@ async def wait_command(client, message):
         await client.send_video(
         chat_id=message.chat.id,
         video=video_url,
-        reply_to_message_id=id_m)
+        reply_to_message_id=id_m,
+        message_thread_id=message.message_thread_id)
     except Exception as e:
         message.reply(f"Error | {e}")
 

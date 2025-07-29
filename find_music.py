@@ -5,12 +5,12 @@ from prefix import my_prefix
 import asyncio
 import json
 import os
-import requests
+
 
 from requirements_installer import install_library
-install_library("lyricsgenius") 
+install_library("lyricsgenius requests -U") 
 
-
+import requests
 from lyricsgenius import Genius
 
 api_token = '9JiBRxKAEgfssIWg3Yw8uxKyDO0HZr1IQS5qVYQiKMLwJ4d_9tEMxxYlm3w_mIML' # genius api key
@@ -31,7 +31,7 @@ async def send_music(client, message):
             lyrics = l.lyrics(song_url=url_song).replace('Embed','')
             with open('song_text.txt','w+',encoding='utf-8') as file:
                 file.write(lyrics)
-            await client.send_document(message.chat.id, 'song_text.txt', caption='Keep the lyrics this song!')
+            await client.send_document(message.chat.id, 'song_text.txt', caption='Keep the lyrics this song!',message_thread_id=message.message_thread_id)
             os.remove('song_text.txt')
         except Exception as e:
             await client.edit_message_text(message.chat.id, message.id, "I can't find text!")
@@ -69,9 +69,9 @@ async def d_send_music(client, message):
         await client.send_audio(
             chat_id=message.chat.id,
             audio=str(saved.audio.file_id),
+            message_thread_id=message.message_thread_id
         )
 
-        # delete the message from Saved Messages
         await client.delete_messages("me", saved.id)
     except TimeoutError:
         await message.edit("That didn't work out")
@@ -101,7 +101,6 @@ async def l_send_music(client, message):
     song_results = await client.get_inline_bot_results(bots, song_name)
 
     try:
-        # send to Saved Messages because hide_via doesn't work sometimes
         saved = await client.send_inline_bot_result(
             chat_id=message.chat.id,
             query_id=song_results.query_id,
