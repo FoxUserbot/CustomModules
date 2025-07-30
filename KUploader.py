@@ -2,14 +2,14 @@
 import io
 import json
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
 from requirements_installer import install_library
+import os
+
 install_library("requests -U")
 import requests
 
-@Client.on_message(filters.command("catbox", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("catbox", "Uploader", os.path.basename(__file__)) & filters.me)
 async def catbox_handler(client, message):
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
@@ -28,7 +28,7 @@ async def catbox_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(filters.command("envs", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("envs", "Uploader", os.path.basename(__file__)) & filters.me)
 async def envs_handler(client, message):
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
@@ -43,7 +43,7 @@ async def envs_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(filters.command("kappa", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("kappa", "Uploader", os.path.basename(__file__)) & filters.me)
 async def kappa_handler(client, message):
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
@@ -60,7 +60,7 @@ async def kappa_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(filters.command("0x0", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("0x0", "Uploader", os.path.basename(__file__)) & filters.me)
 async def oxo_handler(client, message):
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
@@ -79,7 +79,7 @@ async def oxo_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(filters.command("x0", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("x0", "Uploader", os.path.basename(__file__)) & filters.me)
 async def x0_handler(client, message):
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
@@ -94,7 +94,7 @@ async def x0_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(filters.command("tmpfiles", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("tmpfiles", "Uploader", os.path.basename(__file__)) & filters.me)
 async def tmpfiles_handler(client, message):
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
@@ -114,7 +114,7 @@ async def tmpfiles_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(filters.command("pomf", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("pomf", "Uploader", os.path.basename(__file__)) & filters.me)
 async def pomf_handler(client, message):
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
@@ -134,7 +134,7 @@ async def pomf_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(filters.command("bash", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("bash", "Uploader", os.path.basename(__file__)) & filters.me)
 async def bash_handler(client, message):
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
@@ -174,6 +174,3 @@ async def get_file(client, message):
         file = io.BytesIO(text.encode("utf-8"))
         file.name = "text.txt"
         return file
-
-module_list['Uploader'] = f'{my_prefix()}catbox, {my_prefix()}envs, {my_prefix()}kappa, {my_prefix()}0x0, {my_prefix()}x0, {my_prefix()}tmpfiles, {my_prefix()}pomf, {my_prefix()}bash'
-file_list['Uploader'] = 'KUploader.py'
