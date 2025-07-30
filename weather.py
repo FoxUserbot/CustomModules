@@ -1,13 +1,10 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
 from requirements_installer import install_library
-install_library("requests") 
-import requests
-
 import os
 
+install_library("requests") 
+import requests
 
 def get_pic(city):
     city = city.lower()
@@ -22,8 +19,7 @@ def get_pic(city):
             pic.write(block)
         return file_name
 
-
-@Client.on_message(filters.command("weather", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("weather", "Weather", os.path.basename(__file__), "[city]") & filters.me)
 async def weather(client, message):
     try:
         city = message.command[1]
@@ -37,7 +33,3 @@ async def weather(client, message):
         os.remove(f"{city}.png")
     except Exception as e:
         await message.edit(f"Error | {e}")
-
-
-module_list['Weather'] = f'{my_prefix()}weather [city]'
-file_list['Weather'] = 'weather.py'

@@ -1,15 +1,14 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
 from requirements_installer import install_library
+import os
+
 install_library("requests bs4 -U") 
 
 import requests
 from bs4 import BeautifulSoup
 
-
-@Client.on_message(filters.command("pinterest", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("pinterest", "Pinterest", os.path.basename(__file__), "[link]") & filters.me)
 async def pinterest(client, message):
     await message.edit("<emoji id='5397755618750653196'>🌟</emoji> Searching..")
     link = message.command[1]
@@ -24,8 +23,3 @@ async def pinterest(client, message):
         await message.delete()
     except Exception as f:
         await message.edit(f"<emoji id='5397755618750653196'>🌟</emoji> **Error:** {f}")
-        
-
-
-module_list['Pinterest'] = f'{my_prefix()}pinterest [link]'
-file_list['Pinterest'] = 'pinterest.py'

@@ -1,13 +1,10 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-from requirements_installer import install_library
-from modules.plugins_1system.restarter import restart
+from command import fox_command
 import base64
 import os
 import shutil
 
-
+from requirements_installer import install_library
 install_library('openai requests')
 from openai import AsyncOpenAI
 import requests
@@ -15,7 +12,7 @@ import requests
 async def create_module(module_text, module_name):
     prompt = (
         f"""
-{requests.get("https://pastebin.com/raw/RM61gXPy").text}
+{requests.get("https://pastebin.com/raw/uT0MjKCY").text}
 {module_name}.py
 ========
 Вот код модуля: 
@@ -35,12 +32,7 @@ async def create_module(module_text, module_name):
             )
     return response.choices[0].message.content.replace("```python", "").replace("```", "")
 
-
-
-
-
-
-@Client.on_message(filters.command("wine_hikka", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("wine_hikka", "WineHikka", os.path.basename(__file__), "[Link/Reply]") & filters.me)
 async def wine_hikka(client, message):
     file_content = None
     module_name = None
@@ -80,13 +72,6 @@ async def wine_hikka(client, message):
     if answer is not None:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(answer)
-        module_list[module_name] = f'{my_prefix()}{module_name}'
-        file_list[module_name] = f'{module_name}.py'
-        await message.edit(f"🦊 | Module generated at <code>{file_path}</code> \n <b>Restarting...</b>")
-        await restart(message, restart_type="restart")
+        await message.edit(f"🦊 | Module generated at <code>{file_path}</code>")
     else:
         await message.edit(f"🦊 | Error generating module :(")
-
-
-module_list['WineHikka'] = f'{my_prefix()}wine_hikka'
-file_list['WineHikka'] = 'wine_hikka.py'

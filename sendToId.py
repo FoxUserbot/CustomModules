@@ -1,9 +1,8 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command("send", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("send", "SendToId", os.path.basename(__file__), "[ID/Username]") & filters.me)
 async def sendtoid(client, message):
     try:
         await client.unblock_user(message.command[1])
@@ -11,7 +10,3 @@ async def sendtoid(client, message):
         await message.edit(f"Message send to {message.command[1]}")
     except:
         await message.edit("I can't send message!")
-
-
-module_list['SendToId'] = f'{my_prefix()}send [ID | Username]'
-file_list['SendToId'] = 'SendToId.py'

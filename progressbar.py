@@ -1,11 +1,9 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 import time
+from pyrogram import Client, filters
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command("progressbar", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("progressbar", "Progressbar", os.path.basename(__file__), "[text]") & filters.me)
 async def progressbar(client, message):
     try:
         text = ' '.join(message.text.split()[1:])
@@ -19,5 +17,3 @@ async def progressbar(client, message):
                 text + "\n[{:{}}] {:>3}%".format("█" * int(percent / (100.0 / bar_length)), bar_length, int(percent)))
     except IndexError:
         message.edit('No text here!')
-module_list['Progressbar'] = f'{my_prefix()}progressbar [Text]'
-file_list['Progressbar'] = 'progressbar.py'

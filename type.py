@@ -1,11 +1,9 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 import asyncio
+from pyrogram import Client, filters
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command("type", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("type", "Type", os.path.basename(__file__), "[text]") & filters.me)
 async def types(client, message):
     try:
         orig_text = ' '.join(message.text.split()[1:])
@@ -21,7 +19,3 @@ async def types(client, message):
             await asyncio.sleep(0.10)
     except IndexError:
         message.edit('No text here!')
-
-
-module_list['Type'] = f'{my_prefix()}type [text]'
-file_list['Type'] = 'type.py'

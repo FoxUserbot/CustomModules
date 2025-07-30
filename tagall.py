@@ -1,11 +1,9 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 import asyncio
+from pyrogram import Client, filters
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command("tagallone", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("tagallone", "Tagall", os.path.basename(__file__), "[delay] [text]") & filters.me)
 async def tagallone(client, message):
     try:
         delay = message.command[1]
@@ -13,7 +11,7 @@ async def tagallone(client, message):
         delay = 0
 
     if len(message.text.split()) >= 2:
-        text = f'{message.text.split(my_prefix() + "tagallone " + delay, maxsplit=1)[1]}'
+        text = f'{" ".join(message.command[2:])}'
     else:
         text = ""
 
@@ -31,26 +29,22 @@ async def tagallone(client, message):
             delay = float(delay)
         await asyncio.sleep(delay)
 
-
-
-@Client.on_message(filters.command("tagall", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("tagall", "Tagall", os.path.basename(__file__), "[delay] [text]") & filters.me)
 async def tagall(client, message):
     maxTag = 5
-
     try:
         delay = message.command[1]
     except:
         delay = 0
 
     if len(message.text.split()) >= 2:
-        text = f'{message.text.split(my_prefix() + "tagall " + delay, maxsplit=1)[1]}'
+        text = f'{" ".join(message.command[2:])}'
     else:
         text = ""
 
     await message.edit("Loading...")
     icm = []
     chat_id = message.chat.id
-
     gg = client.get_chat_members(chat_id)
     async for member in gg:
         icm.append(member)
@@ -72,7 +66,6 @@ async def tagall(client, message):
             else:
                 string += f"{member.user.mention('*')} "
                 limit += 1
-
         else:
             if limit < maxTag:
                 string += f"{member.user.mention('*')} "
@@ -82,13 +75,8 @@ async def tagall(client, message):
                 string = ""
                 limit = 0
                 l += 1
-
         try:
             delay = int(delay)
         except ValueError:
             delay = float(delay)
         await asyncio.sleep(delay)
-
-
-module_list['Tagall'] = f'{my_prefix()}tagall [delay] [text] | {my_prefix()}tagallone [delay] [text]'
-file_list['Tagall'] = 'tagall.py'

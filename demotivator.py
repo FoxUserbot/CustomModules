@@ -1,13 +1,11 @@
-from prefix import my_prefix
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
 import asyncio
-
-
+from pyrogram import Client, filters
+from command import fox_command
+import os
 
 username_dem = "KlounsBot"
 
-@Client.on_message(filters.command("dem", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("dem", "Demotivator", os.path.basename(__file__), "[text]") & filters.me)
 async def demotivator(client, message):
     await message.edit("Creating demotivator..")
     if message.reply_to_message.photo:
@@ -32,7 +30,3 @@ async def demotivator(client, message):
                 await asyncio.sleep(2)
     else:
         await message.edit("Please, reply to photo")
-
-
-module_list['Demotivator'] = f'{my_prefix()}dem [reply to photo]'
-file_list['Demotivator'] = 'demotivator.py'

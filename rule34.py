@@ -1,8 +1,8 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
 from requirements_installer import install_library
+import os
+
 install_library("requests -U")
 
 import requests
@@ -27,7 +27,6 @@ def get_proxy():
         except:
             pass
         
-        
         try:
             url = "http://rootjazz.com/proxies/proxies.txt"
             response = requests.get(url, timeout=4)
@@ -41,7 +40,6 @@ def get_proxy():
         proxies_list = temp_proxy[:200]
         proxylist.extend(proxies_list)
         return proxies_list
-
 
 def get_picture(tegs):
     tags = (tegs).replace(" ", "%20")
@@ -76,7 +74,6 @@ def get_picture(tegs):
                 file_urls = re.findall(r'(file_url="([^"]+)")', text_data)
                 for file_url in file_urls:
                     result.append(file_url[1])
-                    
 
                 if result is None:
                     raise RuntimeError
@@ -95,20 +92,9 @@ def get_picture(tegs):
     result_random = random.choice(result)
     return str(result_random)
 
-
-@Client.on_message(filters.command("rule34", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("rule34", "Rule34", os.path.basename(__file__), "[tags]") & filters.me)
 async def rule34(client, message):
     result.clear()
-    # await message.edit("Neko tyan..~")
-    # try:
-    #     resp = requests.get("https://nekos.best/api/v2/neko")
-    #     data = resp.json()
-    #     url = data["results"][0]["url"]
-    #     await client.send_photo(message.chat.id, photo=str(url))
-    #     await message.delete()
-    # except Exception as f:
-    #     await message.edit(f"Oops..~\n{f}")
-    
     await message.edit("Search. The module may be slow, nya~, due to limitations of your fucking ISP 😡~")
     orig_text = ' '.join(message.text.split()[1:])
     get_pic = get_picture(orig_text)
@@ -119,7 +105,3 @@ async def rule34(client, message):
         await message.delete()
     except:
         await message.edit(f"Fucking telegram, nya..~\nTags: {orig_text}\nLink: {get_pic}")
-    
-
-module_list['Rule34'] = f'{my_prefix()}rule34'
-file_list['Rule34'] = 'rule34.py'

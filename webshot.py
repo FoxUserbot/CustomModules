@@ -1,15 +1,13 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
 from requirements_installer import install_library
+import os
+
 install_library("requests") 
 import requests
-
 import io
 
-
-@Client.on_message(filters.command("webshot", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("webshot", "Webshot", os.path.basename(__file__), "[url]") & filters.me)
 async def webshot(client, message):
     try:
         user_link = (message.command[1].replace("https://", "").replace("http://", ""))
@@ -31,7 +29,6 @@ async def webshot(client, message):
         except Exception as error:
             await message.edit(f"**Error:** {error}")
             return 
-
     except IndexError:
         await message.edit("Don't have link!")
     except Exception as error:

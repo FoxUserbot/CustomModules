@@ -2,16 +2,12 @@
 # Refactor and optimising A9FM
 # https://github.com/AmokDEV/lordnet/blob/main/modules/hearts.py
 
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from pyrogram.errors.exceptions.flood_420 import FloodWait
-from prefix import my_prefix
-
 import asyncio
 import random
-
-
-
+from pyrogram import Client, filters
+from command import fox_command
+from pyrogram.errors.exceptions.flood_420 import FloodWait
+import os
 
 R = "❤️"
 W = "🤍"
@@ -31,27 +27,21 @@ joined_heart = "\n".join(heart_list)
 heartlet_len = joined_heart.count(R)
 SLEEP = 0.1
 
-
 async def _wrap_edit(message, text: str):
-    """Floodwait-safe utility wrapper for edit"""
     try:
         await message.edit(text)
     except FloodWait as fl:
         await asyncio.sleep(fl.x)
 
-
 async def phase1(message):
-    """Big scroll"""
     BIG_SCROLL = "🧡💛💚💙💜🖤🤎"
     await _wrap_edit(message, joined_heart)
     for heart in BIG_SCROLL:
         await _wrap_edit(message, joined_heart.replace(R, heart))
         await asyncio.sleep(SLEEP)
 
-
 async def phase2(message):
-    """Per-heart randomiser"""
-    ALL = ["❤️"] + list("🧡💛💚💙💜🤎🖤")  # don't include white heart
+    ALL = ["❤️"] + list("🧡💛💚💙💜🤎🖤")
 
     format_heart = joined_heart.replace(R, "{}")
     for _ in range(5):
@@ -59,9 +49,7 @@ async def phase2(message):
         await _wrap_edit(message, heart)
         await asyncio.sleep(SLEEP)
 
-
 async def phase3(message):
-    """Fill up heartlet matrix"""
     await _wrap_edit(message, joined_heart)
     await asyncio.sleep(SLEEP * 2)
     repl = joined_heart
@@ -70,16 +58,13 @@ async def phase3(message):
         await _wrap_edit(message, repl)
         await asyncio.sleep(SLEEP)
 
-
 async def phase4(message):
-    """Matrix shrinking"""
     for i in range(7, 0, -1):
         heart_matrix = "\n".join([R * i] * i)
         await _wrap_edit(message, heart_matrix)
         await asyncio.sleep(SLEEP)
 
-
-@Client.on_message(filters.command(["hearts", "magic", "love"], prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command(["hearts", "magic", "love"], "Hearts", os.path.basename(__file__)) & filters.me)
 async def hearts(client, message):
     await phase1(message)
     await phase2(message)
@@ -94,7 +79,3 @@ async def hearts(client, message):
     await message.edit("**❤️ I love you**")
     await asyncio.sleep(3)
     await message.edit("**❤️ I love you <3**")
-
-
-module_list['Hearts'] = f'{my_prefix()}love'
-file_list['Hearts'] = 'hearts.py'

@@ -1,11 +1,11 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-from requirements_installer import install_library
-
 import base64
 import requests
 import asyncio
+from prefix import my_prefix
+from pyrogram import Client, filters
+from command import fox_command
+from requirements_installer import install_library
+import os
 
 install_library('openai') 
 from openai import AsyncOpenAI, APIError
@@ -18,7 +18,6 @@ modules = {
     "deepseek": "deepseek/deepseek-chat:free",
     "gemini": "google/gemini-2.0-flash-exp:free",
     "qwen": "qwen/qwq-32b:free:free",
-    
 }
 
 def get_proxy():
@@ -48,7 +47,7 @@ def get_proxy():
         proxylist.extend(proxies_list)
         return proxies_list
 
-@Client.on_message(filters.command("ai", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("ai", "AI", os.path.basename(__file__), "[Gemini/DeepSeek/Qwen] [message]") & filters.me)
 async def ai(client, message):
     try:
         module = message.text.split()[1].lower()
@@ -123,6 +122,3 @@ async def ai(client, message):
         await message.edit(f"❌ Ошибка API OpenRouter: {e}")
     except Exception as e:
         await message.edit(f"❌ Произошла непредвиденная ошибка: {e}")
-
-module_list['AI'] = f'{my_prefix()}AI [Gemini/DeepSeek/Qwen] [Message]'
-file_list['AI'] = 'ai.py'

@@ -1,11 +1,8 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
+from command import fox_command
+import os
 
-from prefix import my_prefix
-
-
-
-@Client.on_message(filters.command("ladder", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("ladder", "Ladder", os.path.basename(__file__), "[text]") & filters.me)
 async def ladder(client, message):
     try:
         orig_text = ' '.join(message.text.split()[1:])
@@ -17,7 +14,3 @@ async def ladder(client, message):
         await message.edit(ot)
     except:
         await message.edit('Error in processing your request.')
-
-
-module_list['Ladder'] = f'{my_prefix()}ladder [text]'
-file_list['Ladder'] = 'ladder.py'

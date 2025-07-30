@@ -1,13 +1,10 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 import os
 from pathlib import Path
+from pyrogram import Client, filters
+from command import fox_command
 
 if not os.path.exists("userdata/autoanswer_DB"):
     os.mkdir("userdata/autoanswer_DB")
-
 
 def users():
     ignore = []
@@ -15,8 +12,6 @@ def users():
     for list in i:
         ignore.append(int(list))
     return ignore
-
-
 
 @Client.on_message(filters.private & ~filters.me & ~filters.bot)
 async def aws(client, message):
@@ -36,8 +31,7 @@ async def aws(client, message):
     else:
         pass
 
-
-@Client.on_message(filters.command("aws", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("aws", "AutoAnswer", os.path.basename(__file__), "[ID/Username] [Post ID]") & filters.me)
 async def aws_start(client, message):
     try:
         chat_ids = message.text.split()[1]
@@ -48,7 +42,3 @@ async def aws_start(client, message):
             f.close()
     except Exception as f:
         await message.edit(f"error {f}")
-
-
-module_list['AutoAnswer'] = f'{my_prefix()}aws [ID/Username] [Post ID]'
-file_list['AutoAnswer'] = 'autoanswer.py'

@@ -1,13 +1,11 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 import asyncio
 import re
 from datetime import datetime, timedelta
+from pyrogram import Client, filters
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command('kickall', prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command('kickall', 'KickAllSubs', os.path.basename(__file__)) & filters.me)
 async def kickall(client, message):
     await message.edit("kick all chat members!")
     member = client.get_chat_members(message.chat.id)
@@ -17,8 +15,7 @@ async def kickall(client, message):
         except:
             pass
 
-
-@Client.on_message(filters.command('kickall_hide', prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command('kickall_hide', 'KickAllSubs', os.path.basename(__file__)) & filters.me)
 async def kickall_hide(client, message):
     await message.delete()
     member = client.get_chat_members(message.chat.id)
@@ -28,8 +25,7 @@ async def kickall_hide(client, message):
         except:
             pass
 
-
-@Client.on_message(filters.command("kickall_withbot", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("kickall_withbot", 'KickAllSubs', os.path.basename(__file__)) & filters.me)
 async def tagall(client, message):
     await message.delete()
     chat_id = message.chat.id
@@ -38,8 +34,7 @@ async def tagall(client, message):
         string = f"/ban {member.user.mention}\n"
         await client.send_message(chat_id, text=string)
 
-
-@Client.on_message(filters.command('kickdeleted', prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command('kickdeleted', 'KickAllSubs', os.path.basename(__file__)) & filters.me)
 async def kickall(client, message):
     await message.edit("kick all deleted account from members!")
     member = client.get_chat_members(message.chat.id)
@@ -53,6 +48,3 @@ async def kickall(client, message):
         except:
             pass
     await message.edit(f"Completed!\nI kicked {deleted} deleted accounts!")
-
-module_list['KickAllSubs'] = f'{my_prefix()}kickall | {my_prefix()}kickall_withbot | {my_prefix()}kickdeleted'
-file_list['KickAllSubs'] = 'kickall.py'

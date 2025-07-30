@@ -3,15 +3,10 @@ import os
 import logging
 import random
 import requests
-import datetime
-
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
+from command import fox_command
 
-logger = logging.getLogger("MediaPics")
-
-@Client.on_message(filters.command("anime", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("anime", "MediaPics", os.path.basename(__file__)) & filters.me)
 async def anime(client, message):
     try:
         response = requests.get("https://api.waifu.pics/nsfw/waifu")
@@ -27,7 +22,7 @@ async def anime(client, message):
     except Exception:
         await message.edit("Произошла ошибка при получении картинки.")
 
-@Client.on_message(filters.command("cat", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("cat", "MediaPics", os.path.basename(__file__)) & filters.me)
 async def cat(client, message):
     try:
         response = requests.get("https://api.thecatapi.com/v1/images/search")
@@ -47,7 +42,7 @@ async def cat(client, message):
     except Exception:
         await message.edit("Произошла ошибка при получении фото.")
 
-@Client.on_message(filters.command("lolic", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("lolic", "MediaPics", os.path.basename(__file__)) & filters.me)
 async def lolic(client, message):
     await message.edit("⏳ загрузка вашей лоли фотографии...")
     await asyncio.sleep(0.5)
@@ -99,7 +94,7 @@ async def lolic(client, message):
     except Exception:
         await message.edit("Не удалось получить фотографии. Пожалуйста, разблокируйте @ferganteusbot")
 
-@Client.on_message(filters.command("loli", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("loli", "MediaPics", os.path.basename(__file__)) & filters.me)
 async def loli(client, message):
     await message.edit("⏳ загрузка вашей лоли фотографии...")
     bot_username = "@ferganteusbot"
@@ -154,7 +149,7 @@ async def loli(client, message):
     except Exception:
         await message.edit("Не удалось получить фотографии. Пожалуйста, разблокируйте @ferganteusbot")
 
-@Client.on_message(filters.command("lolih", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("lolih", "MediaPics", os.path.basename(__file__)) & filters.me)
 async def lolih(client, message):
     await message.edit("⏳ загрузка вашей лоли фотографии...")
     bot_username = "@ferganteusbot"
@@ -209,7 +204,7 @@ async def lolih(client, message):
     except Exception:
         await message.edit("Не удалось получить фотографии. Пожалуйста, разблокируйте @ferganteusbot")
 
-@Client.on_message(filters.command("fem", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("fem", "MediaPics", os.path.basename(__file__)) & filters.me)
 async def fem(client, message):
     await message.edit("🔴 загрузка вашего медиа...")
     bot_username = "@ferganteusbot"
@@ -264,7 +259,7 @@ async def fem(client, message):
     except Exception:
         await message.edit("Не удалось получить фотографии. Пожалуйста, разблокируйте @ferganteusbot")
 
-@Client.on_message(filters.command("sfw", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("sfw", "MediaPics", os.path.basename(__file__)) & filters.me)
 async def sfw(client, message):
     await message.edit("🔴 загрузка вашего медиа...")
     bot_username = "@ferganteusbot"
@@ -319,7 +314,7 @@ async def sfw(client, message):
     except Exception:
         await message.edit("Не удалось получить фотографии. Пожалуйста, разблокируйте @ferganteusbot")
 
-@Client.on_message(filters.command("furry", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("furry", "MediaPics", os.path.basename(__file__)) & filters.me)
 async def furry(client, message):
     await message.edit("🔴 загрузка вашего медиа...")
     await asyncio.sleep(0.5)
@@ -371,7 +366,7 @@ async def furry(client, message):
     except Exception:
         await message.edit("Не удалось получить фотографии. Пожалуйста, разблокируйте @ferganteusbot")
 
-@Client.on_message(filters.command("nsfw", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("nsfw", "MediaPics", os.path.basename(__file__)) & filters.me)
 async def nsfw(client, message):
     await message.edit("🔴 загрузка вашего медиа...")
     await asyncio.sleep(0.5)
@@ -422,6 +417,3 @@ async def nsfw(client, message):
             await message.edit("Не удалось получить фотографии. Пожалуйста, разблокируйте @ferganteusbot")
     except Exception:
         await message.edit("Не удалось получить фотографии. Пожалуйста, разблокируйте @ferganteusbot")
-
-module_list['MediaPics'] = f'{my_prefix()}anime, {my_prefix()}cat, {my_prefix()}lolic, {my_prefix()}loli [текст], {my_prefix()}lolih [текст], {my_prefix()}fem [текст], {my_prefix()}sfw [текст], {my_prefix()}furry [текст], {my_prefix()}nsfw [текст]'
-file_list['MediaPics'] = 'mediapics.py'

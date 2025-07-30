@@ -1,9 +1,8 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command("qr", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("qr", "QRcode", os.path.basename(__file__), "[text]") & filters.me)
 async def qr(client, message):
     try:
         texts = ""
@@ -17,7 +16,3 @@ async def qr(client, message):
         await client.send_photo(message.chat.id, QRcode)
     except Exception as e:
         await message.edit(f'Error: {e}')
-
-
-module_list['QRcode'] = f'{my_prefix()}qr [text]'
-file_list['QRcode'] = 'qr.py'

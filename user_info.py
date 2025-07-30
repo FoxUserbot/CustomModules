@@ -1,15 +1,14 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command("user_info", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("user_info", "Userinfo", os.path.basename(__file__), "[user_id/@username]") & filters.me)
 async def get_user_inf(client: Client, message: Message):
     await message.edit("<code>Receiving the information...</code>")
 
     if len(message.text.split()) >= 2:
-        if message.text.split()[1][0]  == '@':
+        if message.text.split()[1][0] == '@':
             us = message.text.split()[1]
             user = await client.get_users(us)
             user = user.id
@@ -42,13 +41,12 @@ async def get_user_inf(client: Client, message: Message):
 </b>"""
     await message.edit(user_info)
 
-
-@Client.on_message(filters.command("user_info_full", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("user_info_full", "Userinfo", os.path.basename(__file__), "[user_id/@username]") & filters.me)
 async def get_full_user_inf(client: Client, message: Message):
     await message.edit("<code>Receiving the information...</code>")
 
     if len(message.text.split()) >= 2:
-        if message.text.split()[1][0]  == '@':
+        if message.text.split()[1][0] == '@':
             us = message.text.split()[1]
             user = await client.get_users(us)
             user = user.id
@@ -90,7 +88,3 @@ async def get_full_user_inf(client: Client, message: Message):
         await message.edit(user_info)
     except Exception as f:
         await message.edit(f"**An error occured...**\n\n{f}")
-
-
-module_list['Userinfo'] = f'{my_prefix()}user_info | {my_prefix()}user_info_full'
-file_list['Userinfo'] = 'user_info.py'

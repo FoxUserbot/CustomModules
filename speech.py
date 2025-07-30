@@ -1,21 +1,15 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 import random
 import os
-
+from pyrogram import Client, filters
+from command import fox_command
 from requirements_installer import install_library
+
 install_library("gTTS") 
-
-
 from gtts import gTTS
 
-
-@Client.on_message(filters.command("voice", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("voice", "TextToVoice", os.path.basename(__file__), "[text]") & filters.me)
 async def voice(client, message):
     lang_code = os.environ.get("lang_code", "en")
-    cust_lang = None
     rnd = random.randint(10000, 99999)
     await message.delete()
     text = message.text.split(None, 1)[1]
@@ -31,11 +25,9 @@ async def voice(client, message):
         await client.send_voice(message.chat.id, voice=f"temp/voice{rnd}.mp3")
     os.remove(f"temp/voice{rnd}.mp3")
 
-
-@Client.on_message(filters.command("voice_ru", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("voice_ru", "TextToVoice", os.path.basename(__file__), "[text]") & filters.me)
 async def ru_voice(client, message):
     lang_code = os.environ.get("lang_code", "ru")
-    cust_lang = None
     rnd = random.randint(10000, 99999)
     await message.delete()
     text = message.text.split(None, 1)[1]
@@ -50,6 +42,3 @@ async def ru_voice(client, message):
     else:
         await client.send_voice(message.chat.id, voice=f"temp/voice{rnd}.mp3")
     os.remove(f"temp/voice{rnd}.mp3")
-
-module_list['TextToVoice'] = f'{my_prefix()}voice [Text] | {my_prefix()}voice_ru [Text]'
-file_list['TextToVoice'] = 'speech.py'

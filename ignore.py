@@ -1,17 +1,14 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
+import os
 
 i = filters.user([])
-
 
 @Client.on_message(i & ~filters.me)
 async def ignored(client, message):
     await message.delete()
 
-
-@Client.on_message(filters.command("ignore", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("ignore", "IgnoreUser", os.path.basename(__file__), "[user_id/@username]") & filters.me)
 async def add_ignore(client, message):
     try:
         try:
@@ -30,7 +27,3 @@ async def add_ignore(client, message):
     else:
         i.add(int(users))
         await message.edit(f"`{str(users)}` ignored")
-
-
-module_list['IgnoreUser'] = f'{my_prefix()}ignore [ID/Reply/@TAG]'
-file_list['IgnoreUser'] = 'ignore.py'

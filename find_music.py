@@ -1,23 +1,19 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 import asyncio
 import json
 import os
-
-
+from pyrogram import Client, filters
+from command import fox_command
 from requirements_installer import install_library
+
 install_library("lyricsgenius requests -U") 
 
 import requests
 from lyricsgenius import Genius
 
-api_token = '9JiBRxKAEgfssIWg3Yw8uxKyDO0HZr1IQS5qVYQiKMLwJ4d_9tEMxxYlm3w_mIML' # genius api key
+api_token = '9JiBRxKAEgfssIWg3Yw8uxKyDO0HZr1IQS5qVYQiKMLwJ4d_9tEMxxYlm3w_mIML'
 l = Genius(api_token)
 
-
-@Client.on_message(filters.command(["l", "lyrics"], prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command(["l", "lyrics"], "FindMusic", os.path.basename(__file__), "[song_name]") & filters.me)
 async def send_music(client, message):
     if len(message.text.split()) >= 2:
         await client.edit_message_text(message.chat.id, message.id, 'Searching text...')
@@ -38,8 +34,7 @@ async def send_music(client, message):
     else:
         await client.edit_message_text(message.chat.id, message.id, 'Give me a name song!')
 
-
-@Client.on_message(filters.command(["dm", "dmusic"], prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command(["dm", "dmusic"], "FindMusic", os.path.basename(__file__), "[song_name]") & filters.me)
 async def d_send_music(client, message):
     bots = "DeezerMusicBot"
 
@@ -80,8 +75,7 @@ async def d_send_music(client, message):
     await asyncio.sleep(2)
     await message.delete()
 
-
-@Client.on_message(filters.command(["lm", "lmusic"], prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command(["lm", "lmusic"], "FindMusic", os.path.basename(__file__), "[song_name]") & filters.me)
 async def l_send_music(client, message):
     bots = "LosslessRobot"
     await message.edit("Search...")
@@ -112,8 +106,3 @@ async def l_send_music(client, message):
         await message.edit("I can't find music!")
     await asyncio.sleep(2)
     await message.delete()
-
-
-
-module_list['FindMusic'] = f'{my_prefix()}lyrics [Title on music] | [{my_prefix()}dmusic] or [{my_prefix()}lmusic] [Title on music]'
-file_list['FindMusic'] = 'find_music.py'

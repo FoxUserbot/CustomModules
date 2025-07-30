@@ -1,9 +1,8 @@
 # https://github.com/ArThirtyFour
 
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
+import os
 
 emoji_list = {
     'а': '<emoji id=5442667851246742007>🔤</emoji>',
@@ -84,7 +83,7 @@ emoji_list = {
     'z': '<emoji id=5330309934825351007>🔤</emoji>'
 }
 
-@Client.on_message(filters.command("prem_text", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("prem_text", "PremiumText", os.path.basename(__file__), "[text]") & filters.me)
 async def prem_text(client, message):
     full_text = ' '.join(message.text.lower().split()[1:])
     result = ''
@@ -95,6 +94,3 @@ async def prem_text(client, message):
         except:
             result += i
     await client.edit_message_text(message.chat.id, message.id, result)
-
-module_list['PremiumText'] = f'{my_prefix()}prem_text [Text]'
-file_list['PremiumText'] = 'premium_text.py'
