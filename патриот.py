@@ -1,7 +1,7 @@
 import asyncio
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
+from command import fox_command
+import os
 
 translate_map = {
     ord("з"): "Z",
@@ -16,7 +16,7 @@ translate_map = {
 
 patriot_enabled = False
 
-@Client.on_message(filters.command("patriot", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("patriot", "Патриот", os.path.basename(__file__)) & filters.me)
 async def patriotcmd(client, message):
     global patriot_enabled
     patriot_enabled = not patriot_enabled
@@ -26,7 +26,7 @@ async def patriotcmd(client, message):
     else:
         return await message.edit("❌ <b>Патриот выключен</b>")
 
-@Client.on_message(filters.command("pat", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("pat", "Патриот", os.path.basename(__file__), "[reply]") & filters.me)
 async def patcmd(client, message):
     reply = message.reply_to_message
     if not reply:
@@ -41,6 +41,3 @@ async def watcher(client, message):
         translated_text = message.text.translate(translate_map)
         if message.text != translated_text:
             await message.edit(translated_text)
-
-module_list['Патриот'] = f'{my_prefix()}patriot, {my_prefix()}pat [реплай]'
-file_list['Патриот'] = 'патриот.py'

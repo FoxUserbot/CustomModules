@@ -1,14 +1,13 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
 from requirements_installer import install_library
+import os
+
 install_library("requests -U") 
 
 import requests
 
-
-@Client.on_message(filters.command("neko", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("neko", "Neko", os.path.basename(__file__)) & filters.me)
 async def neko(client, message):
     await message.edit("Neko tyan..~")
     try:
@@ -19,7 +18,3 @@ async def neko(client, message):
         await message.delete()
     except Exception as f:
         await message.edit(f"Oops..~\n{f}")
-
-
-module_list['Neko'] = f'{my_prefix()}Neko'
-file_list['Neko'] = 'neko.py'

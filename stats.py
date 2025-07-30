@@ -1,13 +1,11 @@
-from pyrogram import Client, filters
-from pyrogram.enums import ChatType
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 from datetime import datetime
 import asyncio
+from pyrogram import Client, filters
+from pyrogram.enums import ChatType
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command(["stat", "stats"], prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command(["stat", "stats"], "Statistic", os.path.basename(__file__)) & filters.me)
 async def stats(client, message):
     await message.edit("Parsing stats...")
     start = datetime.now()
@@ -39,7 +37,3 @@ async def stats(client, message):
     bot_chat = f"**Bots:** {b}\n"
     statistic = private_chat + group_chat + supergroup_chat + channel_chat + bot_chat
     await message.edit(f"You stats:\n{statistic}\nParsed {ms} seconds")
-
-
-module_list['Statistic'] = f'{my_prefix()}stats'
-file_list['Statistic'] = 'stats.py'

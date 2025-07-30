@@ -1,9 +1,9 @@
 ﻿import asyncio
 import random
-
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
+import os
 from prefix import my_prefix
+from pyrogram import Client, filters
+from command import fox_command
 from modules.plugins_1system.restarter import restart 
 
 def load_config():
@@ -18,7 +18,7 @@ def save_config(enabled):
     with open("userdata/nekoeditor_enabled", "w", encoding="utf-8") as f:
         f.write(str(enabled))
 
-@Client.on_message(filters.command("nekoed", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("nekoed", "NekoEditor", os.path.basename(__file__), "[on/off]") & filters.me)
 async def nekoedcmd(client, message):
     args = message.text.split(maxsplit=1)
     arg = args[1].lower() if len(args) > 1 else ""
@@ -45,7 +45,6 @@ async def nekoedcmd(client, message):
             await message.edit("🌀 Режим выключен... >_<")
     else:
         return await message.edit("🚫 Неверный аргумент. Используйте: <code>nekoed [on/off]</code>")
-    
     await restart(message, restart_type="restart")
 
 @Client.on_message(
@@ -82,7 +81,3 @@ async def watcher(client, message):
         await message.edit(modified_text)
     except Exception:
         pass
-
-
-module_list['NekoEditor'] = f'{my_prefix()}nekoed [on/off]'
-file_list['NekoEditor'] = 'nekomod.py'

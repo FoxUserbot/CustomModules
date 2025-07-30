@@ -1,12 +1,9 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 import asyncio
-import time
+from pyrogram import Client, filters
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command("sw", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("sw", "Switch", os.path.basename(__file__), "[reply|text]") & filters.me)
 async def switch(client, message):
     text = " ".join(message.command[1:])
     ru_keys = """ёйцукенгшщзхъфывапролджэячсмитьбю.Ё"№;%:?ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭ/ЯЧСМИТЬБЮ,"""
@@ -25,7 +22,3 @@ async def switch(client, message):
         change = str.maketrans(ru_keys + en_keys, en_keys + ru_keys)
         text = str.translate(text, change)
         await message.edit(text)
-
-
-module_list['Switch'] = f'{my_prefix()}sw [Reply | text] (RU/EN language)'
-file_list['Switch'] = 'switch.py'

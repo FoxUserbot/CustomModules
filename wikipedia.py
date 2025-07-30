@@ -1,13 +1,12 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
 from requirements_installer import install_library
+import os
+
 install_library("wikipedia") 
 import wikipedia
 
-
-@Client.on_message(filters.command("wiki", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("wiki", "Wikipedia", os.path.basename(__file__), "[RU/EN] [WORD]") & filters.me)
 async def wiki(client, message):
     try:
         lang = message.command[1]
@@ -36,6 +35,3 @@ async def wiki(client, message):
         )
     except:
         await message.edit("Dosen't have arguments!")
-
-module_list['Wikipedia'] = f'{my_prefix()}wiki [RU/EN] [WORD]'
-file_list['Wikipedia'] = 'wiki.py'

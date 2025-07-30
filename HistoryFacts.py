@@ -2,18 +2,16 @@ import asyncio
 import json
 import random
 from random import choice
-
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
 from requirements_installer import install_library
+import os
+
 install_library("aiohttp -U")
 
 import aiohttp
 
-
-@Client.on_message(filters.command("rfact", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("rfact", "HistoryFacts", os.path.basename(__file__)) & filters.me)
 async def rfact(client, message):
     url = "https://raw.githubusercontent.com/KorenbZla/HikkaModules/main/HistoryFacts.json"
     async with aiohttp.ClientSession() as session:
@@ -37,8 +35,7 @@ async def rfact(client, message):
                 await message.edit(
                     "<b><i>Error loading data</i></b>: {}".format(response.status))
 
-
-@Client.on_message(filters.command("hfact", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("hfact", "HistoryFacts", os.path.basename(__file__)) & filters.me)
 async def hfact(client, message):
     url = "https://raw.githubusercontent.com/KorenbZla/HikkaModules/main/HistoryFacts.json"
     async with aiohttp.ClientSession() as session:
@@ -62,8 +59,7 @@ async def hfact(client, message):
                 await message.edit(
                     "<b><i>Error loading data</i></b>: {}".format(response.status))
 
-
-@Client.on_message(filters.command("mfact", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("mfact", "HistoryFacts", os.path.basename(__file__)) & filters.me)
 async def mfact(client, message):
     url = "https://raw.githubusercontent.com/KorenbZla/HikkaModules/main/HistoryFacts.json"
     async with aiohttp.ClientSession() as session:
@@ -87,8 +83,7 @@ async def mfact(client, message):
                 await message.edit(
                     "<b><i>Error loading data</i></b>: {}".format(response.status))
 
-
-@Client.on_message(filters.command("sfact", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("sfact", "HistoryFacts", os.path.basename(__file__)) & filters.me)
 async def sfact(client, message):
     url = "https://raw.githubusercontent.com/KorenbZla/HikkaModules/main/HistoryFacts.json"
     async with aiohttp.ClientSession() as session:
@@ -111,7 +106,3 @@ async def sfact(client, message):
             else:
                 await message.edit(
                     "<b><i>Error loading data</i></b>: {}".format(response.status))
-
-
-module_list['HistoryFacts'] = f'{my_prefix()}rfact, {my_prefix()}hfact, {my_prefix()}mfact, {my_prefix()}sfact'
-file_list['HistoryFacts'] = 'HistoryFacts.py'

@@ -11,7 +11,6 @@ except ImportError:
     from PIL import Image, ImageFilter
     FFMPEG_AVAILABLE = True if subprocess else False
 
-
 import asyncio
 import re
 import os
@@ -25,10 +24,8 @@ from io import BytesIO
 from urllib.parse import urljoin, urlparse
 from typing import Union, Optional, List, Dict, Any
 from dataclasses import dataclass
-
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
+from command import fox_command
 
 @dataclass
 class TTData:
@@ -85,7 +82,7 @@ class TikTokAPI:
             else:
                 raise Exception("Unsupported content type")
 
-@Client.on_message(filters.command("tt", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("tt", "SocialMediaDL", os.path.basename(__file__), "[url]") & filters.me)
 async def tt_download(client, message):
     try:
         url = None
@@ -121,6 +118,3 @@ async def tt_download(client, message):
 
     except Exception as e:
         await message.edit(f"<b>Error:</b> {str(e)}")
-
-module_list['SocialMediaDL'] = f'{my_prefix()}tt'
-file_list['SocialMediaDL'] = 'SocialMediaDL.py'

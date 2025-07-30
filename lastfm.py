@@ -1,7 +1,3 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 from xml.dom import minidom
 import urllib.request
 import time
@@ -10,6 +6,8 @@ import requests
 import random
 import os
 import asyncio
+from pyrogram import Client, filters
+from command import fox_command
 
 currentUsername = ""
 try:
@@ -20,7 +18,6 @@ try:
 except Exception as fff:
     currentUsername = "None"
 
-# Variable
 userName = str(currentUsername)
 apiKey = "460cda35be2fbf4f28e8ea7a38580730"
 currentTrackURL = f'http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&nowplaying=true&user={userName}&api_key={apiKey}'
@@ -108,7 +105,6 @@ def checkForNewSong():
     else:
         print("Sleep...")
 
-# Асинх поток
 try:
     try:
         currentUsername = open("userdata/lastfm_username", "r+", encoding="utf-8").readline() 
@@ -126,8 +122,7 @@ try:
 except KeyboardInterrupt:
     raise ValueError
 
-
-@Client.on_message(filters.command("nowplayed", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("nowplayed", "LastFM", os.path.basename(__file__)) & filters.me)
 async def nowplayed(client, message):
     try:
         currentSong = open("userdata/lastfm_current_song", "r+", encoding="utf-8").readline() 
@@ -141,8 +136,7 @@ async def nowplayed(client, message):
         except Exception as e:
             await message.edit(f"[❌] Ошибка при создании файла: {e}")
 
-
-@Client.on_message(filters.command("lastfm_config", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("lastfm_config", "LastFM", os.path.basename(__file__), "[LastFM Nickname] [Username/ID Channel] [ID Message] [Autostart: True/False]") & filters.me)
 async def lastfm_config(client, message):
     
     open("userdata/lastfm_username", "w+", encoding="utf-8")
@@ -179,8 +173,7 @@ async def lastfm_config(client, message):
     
     await message.edit(f"LastFM: {username}\nChannel: {channel_telegram}\nID: {id_in_channel_telegram}\nAutostart: {autostart}")
 
-
-@Client.on_message((filters.command("autoplayed", prefixes=my_prefix()) & filters.me) | (filters.command("last_fm_trigger_start", prefixes="") & filters.me & filters.chat("me")))
+@Client.on_message((fox_command("autoplayed", "LastFM", os.path.basename(__file__)) & filters.me) | (filters.command("last_fm_trigger_start", prefixes="") & filters.me & filters.chat("me")))
 async def autoplayed(client, message):
     await message.edit("STARTED!")
     await asyncio.sleep(5)
@@ -214,7 +207,6 @@ async def autoplayed(client, message):
                     message_id=id_in_channel_telegram,
                     text=F"[🎶] {text}",
                 )
-                # Cache
                 cache = open("temp/lastfm_cache.txt", "w+", encoding="utf-8")
                 cache.write(text)
                 cache.close()
@@ -223,5 +215,3 @@ async def autoplayed(client, message):
         
         await asyncio.sleep(5)
 
-module_list['LastFM'] = f'{my_prefix()}nowplayed | {my_prefix()}autoplayed | {my_prefix()}lastfm_config [LastFM Nickname] [Username/ID Channel] [ID Message] [Autostart: True/False]'
-file_list['LastFM'] = 'lastfm.py'

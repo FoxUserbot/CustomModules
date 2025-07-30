@@ -1,17 +1,15 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command("del", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("del", "Purge", os.path.basename(__file__), "[reply]") & filters.me)
 async def delete_messages(client, message):
     if message.reply_to_message:
         message_id = message.reply_to_message.id
         await client.delete_messages(message.chat.id, message_id)
     await message.delete()
 
-
-@Client.on_message(filters.command("purge", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("purge", "Purge", os.path.basename(__file__), "[reply/group_id] [start_id] [stop_id]") & filters.me)
 async def purge(client, message):
     try:
         try:
@@ -41,6 +39,3 @@ async def purge(client, message):
         await client.send_message(message.chat.id, f"<b>Messages deleted!</b>")
     except Exception as f:
         await message.edit(f"<i>Don't have permision.</i>{f}")
-
-module_list['Purge'] = f'{my_prefix()}del [reply] | {my_prefix()}purge [reply] / [Group id] [Start ID] [Stop ID]'
-file_list['Purge'] = 'purge.py'

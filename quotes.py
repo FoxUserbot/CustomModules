@@ -1,11 +1,9 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 import asyncio
+from pyrogram import Client, filters
+from command import fox_command
+import os
 
-
-@Client.on_message(filters.command("q", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("q", "Quotes", os.path.basename(__file__), "[reply]") & filters.me)
 async def quotly(client, message):
     if not message.reply_to_message:
         await message.edit("Reply to message")
@@ -25,7 +23,3 @@ async def quotly(client, message):
             await message.delete()
         except:
             await asyncio.sleep(1)
-
-
-module_list['Quotes'] = f'{my_prefix()}q [reply]'
-file_list['Quotes'] = 'quotes.py'

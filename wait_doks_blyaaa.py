@@ -1,10 +1,8 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
+from command import fox_command
+import os
 
-from prefix import my_prefix
-
-
-@Client.on_message(filters.command("wait", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("wait", "WaitDoksBlyaaa", os.path.basename(__file__)) & filters.me)
 async def wait_command(client, message):
     video_url = "https://0x0.st/X9S-.mp4"
     if message.reply_to_message:
@@ -20,6 +18,3 @@ async def wait_command(client, message):
         message_thread_id=message.message_thread_id)
     except Exception as e:
         message.reply(f"Error | {e}")
-
-module_list['WaitDoksBlyaaa'] = f'{my_prefix()}wait'
-file_list['WaitDoksBlyaaa'] = 'wait_doks_blyaaa.py'

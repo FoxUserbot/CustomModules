@@ -1,12 +1,13 @@
 import asyncio
 from datetime import datetime
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
 from prefix import my_prefix
+from command import fox_command
 from requirements_installer import install_library
+import os
+
 install_library("aiohttp -U")
 import aiohttp
-
 
 def load_config():
     try:
@@ -23,7 +24,7 @@ def load_config():
     
     return {"api_token": api_token, "api_url": api_url}
 
-@Client.on_message(filters.command("sharkhost_config", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("sharkhost_config", "SharkHost", os.path.basename(__file__), "[API_TOKEN] [API_URL]") & filters.me)
 async def sharkhost_config(client, message):
     args = message.text.split()
     if len(args) < 2:
@@ -43,7 +44,7 @@ async def sharkhost_config(client, message):
                       f"<b>API Token:</b> <code>{api_token[:20]}...</code>\n"
                       f"<b>API URL:</b> <code>{api_url}</code>")
 
-@Client.on_message(filters.command("sstatus", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("sstatus", "SharkHost", os.path.basename(__file__), "[code]") & filters.me)
 async def sstatuscmd(client, message):
     args = message.text.split(maxsplit=1)
     args = args[1] if len(args) > 1 else ""
@@ -167,7 +168,7 @@ async def _get_my_userbot():
     except aiohttp.ClientError as e:
         return f"🚫 <b>Ошибка сети:</b> <blockquote>{e}</blockquote>"
 
-@Client.on_message(filters.command("scheck", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("scheck", "SharkHost", os.path.basename(__file__), "[ID/username]") & filters.me)
 async def scheckcmd(client, message):
     args = message.text.split(maxsplit=1)
     identifier = args[1] if len(args) > 1 else ""
@@ -183,7 +184,7 @@ async def scheckcmd(client, message):
     config = load_config()
     if not config.get("api_token"):
         return await message.edit("🚫 <b>API токен не установлен!</b>\n\n"
-                                f"Используйте: <code>{my_prefix()}sharkhost_config [API_TOKEN] [API_URL]</code>")
+                                f"Используйте: <code>.sharkhost_config [API_TOKEN] [API_URL]</code>")
     
     headers = {"X-API-Token": config["api_token"]}
     url = f"{config['api_url'].strip('/')}/api/v1/users/{identifier}"
@@ -228,7 +229,7 @@ async def scheckcmd(client, message):
     
     await message.edit(result)
 
-@Client.on_message(filters.command("smanage", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("smanage", "SharkHost", os.path.basename(__file__)) & filters.me)
 async def smanagecmd(client, message):
     await message.edit("🔄 <b>Узнаю информацию ...</b>")
     userbot_data = await _get_my_userbot()
@@ -242,13 +243,13 @@ async def smanagecmd(client, message):
     text = (f"🕹️ <b>Управление юзерботом</b> <code>{ub_username}</code>\n"
             f"<b>Текущий статус:</b> <code>{ub_status}</code>\n\n"
             f"<b>Команды управления:</b>\n"
-            f"• <code>{my_prefix()}sstart</code> - Запустить юзербота\n"
-            f"• <code>{my_prefix()}sstop</code> - Остановить юзербота\n"
-            f"• <code>{my_prefix()}srestart</code> - Перезапустить юзербота")
+            f"• <code>.sstart</code> - Запустить юзербота\n"
+            f"• <code>.sstop</code> - Остановить юзербота\n"
+            f"• <code>.srestart</code> - Перезапустить юзербота")
     
     await message.edit(text)
 
-@Client.on_message(filters.command("sstart", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("sstart", "SharkHost", os.path.basename(__file__)) & filters.me)
 async def sstartcmd(client, message):
     await message.edit("🔄 <b>Узнаю информацию ...</b>")
     userbot_data = await _get_my_userbot()
@@ -261,7 +262,7 @@ async def sstartcmd(client, message):
     await _direct_manage_action(ub_username, "start")
     await message.edit("✅ Started")
 
-@Client.on_message(filters.command("sstop", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("sstop", "SharkHost", os.path.basename(__file__)) & filters.me)
 async def sstopcmd(client, message):
     await message.edit("🔄 <b>Узнаю информацию ...</b>")
     userbot_data = await _get_my_userbot()
@@ -274,7 +275,7 @@ async def sstopcmd(client, message):
     await _direct_manage_action(ub_username, "stop")
     await message.edit("❌ Stopped")
 
-@Client.on_message(filters.command("srestart", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("srestart", "SharkHost", os.path.basename(__file__)) & filters.me)
 async def srestartcmd(client, message):
     await message.edit("🔄 <b>Узнаю информацию ...</b>")
     userbot_data = await _get_my_userbot()
@@ -299,8 +300,3 @@ async def _direct_manage_action(ub_username: str, action: str):
                 await resp.text()
     except aiohttp.ClientError:
         pass
-
-
-
-module_list['SharkHost'] = f'{my_prefix()}sharkhost_config [API_TOKEN] [API_URL], {my_prefix()}sstatus [код], {my_prefix()}scheck [ID/юзернейм], {my_prefix()}smanage, {my_prefix()}sstart, {my_prefix()}sstop, {my_prefix()}srestart'
-file_list['SharkHost'] = 'SharkHost.py'

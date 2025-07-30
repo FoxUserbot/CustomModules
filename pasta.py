@@ -1,17 +1,14 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-
-from prefix import my_prefix
-from requirements_installer import install_library
-
 from random import randint
 from time import sleep
+from pyrogram import Client, filters
+from command import fox_command
+from requirements_installer import install_library
+import os
 
 install_library('faker')
 from faker import Faker
 
-
-@Client.on_message(filters.command("doxx", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("doxx", "Doxx", os.path.basename(__file__)) & filters.me)
 async def hack(client, message):
     fake = Faker('ru_RU')
     await message.edit('Доксим тя пидор')
@@ -34,7 +31,3 @@ async def hack(client, message):
 '''
     sleep(2)
     await message.edit(pasta)
-
-
-module_list['Doxx'] = f'{my_prefix()}doxx'
-file_list['Doxx'] = 'pasta.py'

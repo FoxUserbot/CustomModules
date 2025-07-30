@@ -1,9 +1,7 @@
-from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
 from pathlib import Path
-
+from pyrogram import Client, filters
+from command import fox_command
+import os
 
 @Client.on_message(filters.text & filters.incoming & filters.regex("^\-$") & filters.reply)
 async def repDown(client, message):
@@ -23,7 +21,6 @@ async def repDown(client, message):
     except:
         pass
 
-
 @Client.on_message(filters.text & filters.incoming & filters.regex("^\+$") & filters.reply)
 async def repUp(client, message):
     try:
@@ -42,8 +39,7 @@ async def repUp(client, message):
     except:
         pass
 
-
-@Client.on_message(filters.command("rep", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("rep", "Reputation", os.path.basename(__file__), "[number]") & filters.me)
 async def repNakrutka(client, message):
     try:
         with open("temp/reputation", "w+") as f:
@@ -59,7 +55,3 @@ async def repNakrutka(client, message):
         with open("temp/reputation", "w+") as f:
             f.write(str(int(0)))
             f.close()
-
-
-module_list['Reputation'] = f'reply "+" or "-" from another user | {my_prefix()}rep [number]'
-file_list['Reputation'] = 'reputation.py'

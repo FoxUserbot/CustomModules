@@ -1,13 +1,12 @@
 from pyrogram import Client, filters
-from modules.plugins_1system.settings.main_settings import module_list, file_list
-from prefix import my_prefix
-
+from command import fox_command
 from requirements_installer import install_library
+import os
+
 install_library("requests")
 import requests
 
-
-@Client.on_message(filters.command("short", prefixes=my_prefix()) & filters.me)
+@Client.on_message(fox_command("short", "ShortURL", os.path.basename(__file__), "[Reply/Link]") & filters.me)
 async def shorten_link_command(client, message):
     try:
         await message.edit("Shorting...")
@@ -20,11 +19,6 @@ async def shorten_link_command(client, message):
         response = requests.get('https://tinyurl.com/api-create.php?url=' + full_url)
 
         short_url = response.text
-        
         await message.edit(f"Short URL: {short_url}")
     except Exception as error:
         await message.edit(f"Error: {error}")
-
-
-module_list['ShortURL'] = f'{my_prefix()}short [Reply | link]'
-file_list['ShortURL'] = 'short.py'
