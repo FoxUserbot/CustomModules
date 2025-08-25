@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
@@ -8,8 +8,9 @@ install_library("bs4 requests -U")
 import requests
 from bs4 import BeautifulSoup
 
-@Client.on_message(fox_command("fcheck", "FragmentChecker", os.path.basename(__file__), "[username]") & filters.me)
+@Client.on_message(fox_command("fcheck", "FragmentChecker", os.path.basename(__file__), "[username]") & fox_sudo())
 async def fcheck_handler(client, message):
+    message = await who_message(client, message)
     args = " ".join(message.command[1:]) if len(message.command) > 1 else ""
     if not args:
         await message.edit("<emoji id=5212926868012935693>❌</emoji> <b>Please specify username</b>")

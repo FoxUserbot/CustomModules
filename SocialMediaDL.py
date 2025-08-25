@@ -25,7 +25,7 @@ from urllib.parse import urljoin, urlparse
 from typing import Union, Optional, List, Dict, Any
 from dataclasses import dataclass
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 
 @dataclass
 class TTData:
@@ -82,8 +82,9 @@ class TikTokAPI:
             else:
                 raise Exception("Unsupported content type")
 
-@Client.on_message(fox_command("tt", "SocialMediaDL", os.path.basename(__file__), "[url]") & filters.me)
+@Client.on_message(fox_command("tt", "SocialMediaDL", os.path.basename(__file__), "[url]") & fox_sudo())
 async def tt_download(client, message):
+    message = await who_message(client, message)
     try:
         url = None
         if message.reply_to_message:

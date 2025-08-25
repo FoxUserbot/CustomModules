@@ -1,10 +1,11 @@
 import asyncio
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("type", "Type", os.path.basename(__file__), "[text]") & filters.me)
+@Client.on_message(fox_command("type", "Type", os.path.basename(__file__), "[text]") & fox_sudo())
 async def types(client, message):
+    message = await who_message(client, message)
     try:
         orig_text = ' '.join(message.text.split()[1:])
         text = orig_text

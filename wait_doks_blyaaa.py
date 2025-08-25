@@ -1,9 +1,10 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("wait", "WaitDoksBlyaaa", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("wait", "WaitDoksBlyaaa", os.path.basename(__file__)) & fox_sudo())
 async def wait_command(client, message):
+    message = await who_message(client, message)
     video_url = "https://0x0.st/X9S-.mp4"
     if message.reply_to_message:
         id_m = message.reply_to_message.id

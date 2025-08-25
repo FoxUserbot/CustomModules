@@ -1,9 +1,9 @@
-﻿import asyncio
+import asyncio
 import random
 import os
 from prefix import my_prefix
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from modules.plugins_1system.restarter import restart 
 
 def load_config():
@@ -18,8 +18,9 @@ def save_config(enabled):
     with open("userdata/nekoeditor_enabled", "w", encoding="utf-8") as f:
         f.write(str(enabled))
 
-@Client.on_message(fox_command("nekoed", "NekoEditor", os.path.basename(__file__), "[on/off]") & filters.me)
+@Client.on_message(fox_command("nekoed", "NekoEditor", os.path.basename(__file__), "[on/off]") & fox_sudo())
 async def nekoedcmd(client, message):
+    message = await who_message(client, message)
     args = message.text.split(maxsplit=1)
     arg = args[1].lower() if len(args) > 1 else ""
     me = await client.get_me()
@@ -52,7 +53,7 @@ async def nekoedcmd(client, message):
     & ~filters.forwarded 
     & filters.text 
     & ~filters.media 
-    & filters.me
+    & fox_sudo()
     & ~filters.command("", prefixes=my_prefix())  # Игнорировать команды с префиксом
 )
 async def watcher(client, message):

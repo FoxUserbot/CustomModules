@@ -1,6 +1,6 @@
 import asyncio
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
 translate_map = {
@@ -16,8 +16,9 @@ translate_map = {
 
 patriot_enabled = False
 
-@Client.on_message(fox_command("patriot", "Патриот", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("patriot", "Патриот", os.path.basename(__file__)) & fox_sudo())
 async def patriotcmd(client, message):
+    message = await who_message(client, message)
     global patriot_enabled
     patriot_enabled = not patriot_enabled
     
@@ -26,8 +27,9 @@ async def patriotcmd(client, message):
     else:
         return await message.edit("❌ <b>Патриот выключен</b>")
 
-@Client.on_message(fox_command("pat", "Патриот", os.path.basename(__file__), "[reply]") & filters.me)
+@Client.on_message(fox_command("pat", "Патриот", os.path.basename(__file__), "[reply]") & fox_sudo())
 async def patcmd(client, message):
+    message = await who_message(client, message)
     reply = message.reply_to_message
     if not reply:
         return await message.edit("<b>Ответьте на сообщение с помощью </b><code>pat</code>")
@@ -35,7 +37,7 @@ async def patcmd(client, message):
     translated_text = reply.text.translate(translate_map)
     await message.edit(f"🇷🇺 <b>Патриот отредактировал сообщение</b>:\n\n{translated_text}")
 
-@Client.on_message(filters.outgoing & filters.me)
+@Client.on_message(filters.outgoing & fox_sudo())
 async def watcher(client, message):
     if patriot_enabled:
         translated_text = message.text.translate(translate_map)

@@ -3,7 +3,7 @@ import json
 import random
 from random import choice
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
@@ -11,8 +11,9 @@ install_library("aiohttp -U")
 
 import aiohttp
 
-@Client.on_message(fox_command("rfact", "HistoryFacts", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("rfact", "HistoryFacts", os.path.basename(__file__)) & fox_sudo())
 async def rfact(client, message):
+    message = await who_message(client, message)
     url = "https://raw.githubusercontent.com/KorenbZla/HikkaModules/main/HistoryFacts.json"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -35,8 +36,9 @@ async def rfact(client, message):
                 await message.edit(
                     "<b><i>Error loading data</i></b>: {}".format(response.status))
 
-@Client.on_message(fox_command("hfact", "HistoryFacts", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("hfact", "HistoryFacts", os.path.basename(__file__)) & fox_sudo())
 async def hfact(client, message):
+    message = await who_message(client, message)
     url = "https://raw.githubusercontent.com/KorenbZla/HikkaModules/main/HistoryFacts.json"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -59,8 +61,9 @@ async def hfact(client, message):
                 await message.edit(
                     "<b><i>Error loading data</i></b>: {}".format(response.status))
 
-@Client.on_message(fox_command("mfact", "HistoryFacts", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("mfact", "HistoryFacts", os.path.basename(__file__)) & fox_sudo())
 async def mfact(client, message):
+    message = await who_message(client, message)
     url = "https://raw.githubusercontent.com/KorenbZla/HikkaModules/main/HistoryFacts.json"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -83,8 +86,9 @@ async def mfact(client, message):
                 await message.edit(
                     "<b><i>Error loading data</i></b>: {}".format(response.status))
 
-@Client.on_message(fox_command("sfact", "HistoryFacts", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("sfact", "HistoryFacts", os.path.basename(__file__)) & fox_sudo())
 async def sfact(client, message):
+    message = await who_message(client, message)
     url = "https://raw.githubusercontent.com/KorenbZla/HikkaModules/main/HistoryFacts.json"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:

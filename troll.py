@@ -1,12 +1,13 @@
 import asyncio
 import random
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from pyrogram.errors.exceptions.flood_420 import FloodWait
 import os
 
-@Client.on_message(fox_command("hack", "Troll", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("hack", "Troll", os.path.basename(__file__)) & fox_sudo())
 async def hack(client, message):
+    message = await who_message(client, message)
     perc = 0
     while perc < 100:
         text = "👮 Взлом пентагона в процессе..." + str(perc) + "%"
@@ -26,8 +27,9 @@ async def hack(client, message):
     text = "🐓 Нашли файлы, что ты - петух!"
     await message.edit(text)
 
-@Client.on_message(fox_command("drugs", "Troll", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("drugs", "Troll", os.path.basename(__file__)) & fox_sudo())
 async def drugs(client, message):
+    message = await who_message(client, message)
     perc = 0
     while perc < 100:
         text = "💊 Поиск запрещённых препаратов " + str(perc) + "%"
@@ -47,8 +49,9 @@ async def drugs(client, message):
     drug = random.choice(drugsss)
     await message.edit(drug)
 
-@Client.on_message(fox_command("police", "Troll", os.path.basename(__file__), "[duration]") & filters.me)
+@Client.on_message(fox_command("police", "Troll", os.path.basename(__file__), "[duration]") & fox_sudo())
 async def police(client, message):
+    message = await who_message(client, message)
     red_blue = "🔴🔴🔴⬜⬜⬜🔵🔵🔵"
     blue_red = "🔵🔵🔵⬜⬜⬜🔴🔴🔴"
     duration = 0
@@ -68,8 +71,9 @@ end_message = '**1000-7, я умер, прости**'
 messages_per_second = 7
 sleep_time_ghoul = 0.1
 
-@Client.on_message(fox_command("ghoul", "Troll", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("ghoul", "Troll", os.path.basename(__file__)) & fox_sudo())
 async def ghoul_spam_handler(client, message):
+    message = await who_message(client, message)
     i = 1000
     while i > 0:
         try:
@@ -81,8 +85,9 @@ async def ghoul_spam_handler(client, message):
     if end_message != '':
         await client.send_message(message.chat.id, end_message)
 
-@Client.on_message(fox_command("stupid", "Troll", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("stupid", "Troll", os.path.basename(__file__)) & fox_sudo())
 async def stupid(client, message):
+    message = await who_message(client, message)
     animation_interval = 0.5
     animation_ttl = range(0, 14)
     await message.edit_text("stupid boy")
@@ -106,8 +111,9 @@ async def stupid(client, message):
         await asyncio.sleep(animation_interval)
         await message.edit_text(animation_chars[i % 14])
 
-@Client.on_message(fox_command("bombs", "Troll", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("bombs", "Troll", os.path.basename(__file__)) & fox_sudo())
 async def bombs(client, message):
+    message = await who_message(client, message)
     await message.edit_text("▪️▪️▪️▪️ \n▪️▪️▪️▪️ \n▪️▪️▪️▪️ \n▪️▪️▪️▪️ \n▪️▪️▪️▪️ \n")
     await asyncio.sleep(0.5)
     await message.edit_text("💣💣💣💣 \n▪️▪️▪️▪️ \n▪️▪️▪️▪️ \n▪️▪️▪️▪️ \n▪️▪️▪️▪️ \n")
@@ -129,8 +135,9 @@ async def bombs(client, message):
     await message.edit_text("<b>DOMBIL BAMBAS......</b>")
     await asyncio.sleep(2)
 
-@Client.on_message(fox_command("call", "Troll", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("call", "Troll", os.path.basename(__file__)) & fox_sudo())
 async def cell(client, message):
+    message = await who_message(client, message)
     animation_interval = 3
     animation_ttl = range(0, 18)
     await message.edit_text("Calling Pavel Durov (ceo of telegram)......")
@@ -158,8 +165,9 @@ async def cell(client, message):
         await asyncio.sleep(animation_interval)
         await message.edit_text(animation_chars[i % 18])
 
-@Client.on_message(fox_command("kill", "Troll", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("kill", "Troll", os.path.basename(__file__)) & fox_sudo())
 async def kill(client, message):
+    message = await who_message(client, message)
     animation_interval = 0.3
     animation_ttl = range(0, 103)
     animation_chars = [
@@ -182,8 +190,9 @@ async def kill(client, message):
         await asyncio.sleep(animation_interval)
         await message.edit_text(animation_chars[i % 103])
 
-@Client.on_message(fox_command("ZV", "Troll", os.path.basename(__file__), "") & filters.me)
+@Client.on_message(fox_command("ZV", "Troll", os.path.basename(__file__), "") & fox_sudo())
 async def ZV(client, message):
+    message = await who_message(client, message)
     rofl_list = {
         'З':'Z',
         'з':'Z',

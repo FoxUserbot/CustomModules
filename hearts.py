@@ -5,7 +5,7 @@
 import asyncio
 import random
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from pyrogram.errors.exceptions.flood_420 import FloodWait
 import os
 
@@ -64,8 +64,9 @@ async def phase4(message):
         await _wrap_edit(message, heart_matrix)
         await asyncio.sleep(SLEEP)
 
-@Client.on_message(fox_command(["hearts", "magic", "love"], "Hearts", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command(["hearts", "magic", "love"], "Hearts", os.path.basename(__file__)) & fox_sudo())
 async def hearts(client, message):
+    message = await who_message(client, message)
     await phase1(message)
     await phase2(message)
     await phase3(message)

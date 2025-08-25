@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
@@ -7,8 +7,9 @@ install_library("requests -U")
 
 import requests
 
-@Client.on_message(fox_command("neko", "Neko", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("neko", "Neko", os.path.basename(__file__)) & fox_sudo())
 async def neko(client, message):
+    message = await who_message(client, message)
     await message.edit("Neko tyan..~")
     try:
         resp = requests.get("https://nekos.best/api/v2/neko")

@@ -1,10 +1,11 @@
 import asyncio
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("sw", "Switch", os.path.basename(__file__), "[reply|text]") & filters.me)
+@Client.on_message(fox_command("sw", "Switch", os.path.basename(__file__), "[reply|text]") & fox_sudo())
 async def switch(client, message):
+    message = await who_message(client, message)
     text = " ".join(message.command[1:])
     ru_keys = """ёйцукенгшщзхъфывапролджэячсмитьбю.Ё"№;%:?ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭ/ЯЧСМИТЬБЮ,"""
     en_keys = """`qwertyuiop[]asdfghjkl;'zxcvbnm,./~@#$%^&QWERTYUIOP{}ASDFGHJKL:"|ZXCVBNM<>?"""

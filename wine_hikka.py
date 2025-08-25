@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import base64
 import os
 import shutil
@@ -47,8 +47,9 @@ async def create_module(module_text, module_name):
             )
     return response.choices[0].message.content.replace("```python", "").replace("```", "")
 
-@Client.on_message(fox_command("wine_hikka", "WineHikka", os.path.basename(__file__), "[Link/Reply]") & filters.me)
+@Client.on_message(fox_command("wine_hikka", "WineHikka", os.path.basename(__file__), "[Link/Reply]") & fox_sudo())
 async def wine_hikka(client, message):
+    message = await who_message(client, message)
     file_content = None
     module_name = None
     if message.reply_to_message and message.reply_to_message.document:
@@ -92,8 +93,9 @@ async def wine_hikka(client, message):
     else:
         await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Error generating module :(")
 
-@Client.on_message(fox_command("wine_config", "WineHikka", os.path.basename(__file__), "[Model]") & filters.me)
+@Client.on_message(fox_command("wine_config", "WineHikka", os.path.basename(__file__), "[Model]") & fox_sudo())
 async def wine_config(client, message):
+    message = await who_message(client, message)
     if len(message.command) < 2:
         current_model = get_wine_model()
         await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | **Current model:** `{current_model}`\n\n**Usage:**\n`{my_prefix()}wine_config [model_name]`\n\n**Example models:**\n• `qwen/qwen2.5-72b-instruct`\n• `anthropic/claude-3.5-sonnet`\n• `meta-llama/llama-3.1-8b-instruct`\n• `google/gemini-pro-1.5`\n\n <a href='https://openrouter.ai/models?max_price=0'><b>You can get models here</b></a>")

@@ -3,7 +3,7 @@ import os
 import time
 from datetime import datetime
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 
 install_library("aiohttp -U")
@@ -25,8 +25,9 @@ def check_config():
     except FileNotFoundError:
         return None
 
-@Client.on_message(fox_command(command="speedconfig", module_name="SpeedTest", filename=os.path.basename(__file__), arguments="en/ru/uk") & filters.me)
+@Client.on_message(fox_command(command="speedconfig", module_name="SpeedTest", filename=os.path.basename(__file__), arguments="en/ru/uk") & fox_sudo())
 async def speed_config(client, message):
+    message = await who_message(client, message)
     args = message.text.split()
     if len(args) < 2:
         return await message.edit("🚫 <b>Использование:</b> <code>speedconfig [en/ru/uk]</code>")
@@ -78,8 +79,9 @@ async def get_network_info(session):
     except:
         return {"location": "N/A", "org": "N/A"}
 
-@Client.on_message(fox_command(command="speedtest", module_name="SpeedTest", filename=os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command(command="speedtest", module_name="SpeedTest", filename=os.path.basename(__file__)) & fox_sudo())
 async def speedtest_handler(client, message):
+    message = await who_message(client, message)
     config = load_config()
     if not config.get("language"):
         return await message.edit("🚫 <b>Язык не установлен!</b>\n\n"

@@ -1,6 +1,6 @@
 from pathlib import Path
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
 @Client.on_message(filters.text & filters.incoming & filters.regex("^\-$") & filters.reply)
@@ -39,8 +39,9 @@ async def repUp(client, message):
     except:
         pass
 
-@Client.on_message(fox_command("rep", "Reputation", os.path.basename(__file__), "[number]") & filters.me)
+@Client.on_message(fox_command("rep", "Reputation", os.path.basename(__file__), "[number]") & fox_sudo())
 async def repNakrutka(client, message):
+    message = await who_message(client, message)
     try:
         with open("temp/reputation", "w+") as f:
             rep = str(int(message.command[1]))

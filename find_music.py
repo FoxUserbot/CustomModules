@@ -2,7 +2,7 @@ import asyncio
 import json
 import os
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 
 install_library("lyricsgenius requests -U") 
@@ -13,8 +13,9 @@ from lyricsgenius import Genius
 api_token = '9JiBRxKAEgfssIWg3Yw8uxKyDO0HZr1IQS5qVYQiKMLwJ4d_9tEMxxYlm3w_mIML'
 l = Genius(api_token)
 
-@Client.on_message(fox_command(["l", "lyrics"], "FindMusic", os.path.basename(__file__), "[song_name]") & filters.me)
+@Client.on_message(fox_command(["l", "lyrics"], "FindMusic", os.path.basename(__file__), "[song_name]") & fox_sudo())
 async def send_music(client, message):
+    message = await who_message(client, message)
     if len(message.text.split()) >= 2:
         await client.edit_message_text(message.chat.id, message.id, 'Searching text...')
         url = {"Authorization": f"Bearer {api_token}"}
@@ -34,8 +35,9 @@ async def send_music(client, message):
     else:
         await client.edit_message_text(message.chat.id, message.id, 'Give me a name song!')
 
-@Client.on_message(fox_command(["dm", "dmusic"], "FindMusic", os.path.basename(__file__), "[song_name]") & filters.me)
+@Client.on_message(fox_command(["dm", "dmusic"], "FindMusic", os.path.basename(__file__), "[song_name]") & fox_sudo())
 async def d_send_music(client, message):
+    message = await who_message(client, message)
     bots = "DeezerMusicBot"
 
     await message.edit("Search...")
@@ -75,8 +77,9 @@ async def d_send_music(client, message):
     await asyncio.sleep(2)
     await message.delete()
 
-@Client.on_message(fox_command(["lm", "lmusic"], "FindMusic", os.path.basename(__file__), "[song_name]") & filters.me)
+@Client.on_message(fox_command(["lm", "lmusic"], "FindMusic", os.path.basename(__file__), "[song_name]") & fox_sudo())
 async def l_send_music(client, message):
+    message = await who_message(client, message)
     bots = "LosslessRobot"
     await message.edit("Search...")
     song_name = ""

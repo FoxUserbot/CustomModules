@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 from pyrogram import Client, filters
 from prefix import my_prefix
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
@@ -24,8 +24,9 @@ def load_config():
     
     return {"api_token": api_token, "api_url": api_url}
 
-@Client.on_message(fox_command("sharkhost_config", "SharkHost", os.path.basename(__file__), "[API_TOKEN] [API_URL]") & filters.me)
+@Client.on_message(fox_command("sharkhost_config", "SharkHost", os.path.basename(__file__), "[API_TOKEN] [API_URL]") & fox_sudo())
 async def sharkhost_config(client, message):
+    message = await who_message(client, message)
     args = message.text.split()
     if len(args) < 2:
         return await message.edit("🚫 <b>Использование:</b> <code>sharkhost_config [API_TOKEN] [API_URL]</code>\n\n"
@@ -44,8 +45,9 @@ async def sharkhost_config(client, message):
                       f"<b>API Token:</b> <code>{api_token[:20]}...</code>\n"
                       f"<b>API URL:</b> <code>{api_url}</code>")
 
-@Client.on_message(fox_command("sstatus", "SharkHost", os.path.basename(__file__), "[code]") & filters.me)
+@Client.on_message(fox_command("sstatus", "SharkHost", os.path.basename(__file__), "[code]") & fox_sudo())
 async def sstatuscmd(client, message):
+    message = await who_message(client, message)
     args = message.text.split(maxsplit=1)
     args = args[1] if len(args) > 1 else ""
     params = {"code": args} if args else {}
@@ -168,8 +170,9 @@ async def _get_my_userbot():
     except aiohttp.ClientError as e:
         return f"🚫 <b>Ошибка сети:</b> <blockquote>{e}</blockquote>"
 
-@Client.on_message(fox_command("scheck", "SharkHost", os.path.basename(__file__), "[ID/username]") & filters.me)
+@Client.on_message(fox_command("scheck", "SharkHost", os.path.basename(__file__), "[ID/username]") & fox_sudo())
 async def scheckcmd(client, message):
+    message = await who_message(client, message)
     args = message.text.split(maxsplit=1)
     identifier = args[1] if len(args) > 1 else ""
     
@@ -229,8 +232,9 @@ async def scheckcmd(client, message):
     
     await message.edit(result)
 
-@Client.on_message(fox_command("smanage", "SharkHost", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("smanage", "SharkHost", os.path.basename(__file__)) & fox_sudo())
 async def smanagecmd(client, message):
+    message = await who_message(client, message)
     await message.edit("🔄 <b>Узнаю информацию ...</b>")
     userbot_data = await _get_my_userbot()
     if isinstance(userbot_data, str):
@@ -249,8 +253,9 @@ async def smanagecmd(client, message):
     
     await message.edit(text)
 
-@Client.on_message(fox_command("sstart", "SharkHost", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("sstart", "SharkHost", os.path.basename(__file__)) & fox_sudo())
 async def sstartcmd(client, message):
+    message = await who_message(client, message)
     await message.edit("🔄 <b>Узнаю информацию ...</b>")
     userbot_data = await _get_my_userbot()
     if isinstance(userbot_data, str):
@@ -262,8 +267,9 @@ async def sstartcmd(client, message):
     await _direct_manage_action(ub_username, "start")
     await message.edit("✅ Started")
 
-@Client.on_message(fox_command("sstop", "SharkHost", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("sstop", "SharkHost", os.path.basename(__file__)) & fox_sudo())
 async def sstopcmd(client, message):
+    message = await who_message(client, message)
     await message.edit("🔄 <b>Узнаю информацию ...</b>")
     userbot_data = await _get_my_userbot()
     if isinstance(userbot_data, str):
@@ -275,8 +281,9 @@ async def sstopcmd(client, message):
     await _direct_manage_action(ub_username, "stop")
     await message.edit("❌ Stopped")
 
-@Client.on_message(fox_command("srestart", "SharkHost", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("srestart", "SharkHost", os.path.basename(__file__)) & fox_sudo())
 async def srestartcmd(client, message):
+    message = await who_message(client, message)
     await message.edit("🔄 <b>Узнаю информацию ...</b>")
     userbot_data = await _get_my_userbot()
     if isinstance(userbot_data, str):

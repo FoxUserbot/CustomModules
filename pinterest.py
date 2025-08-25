@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
@@ -8,8 +8,9 @@ install_library("requests bs4 -U")
 import requests
 from bs4 import BeautifulSoup
 
-@Client.on_message(fox_command("pinterest", "Pinterest", os.path.basename(__file__), "[link]") & filters.me)
+@Client.on_message(fox_command("pinterest", "Pinterest", os.path.basename(__file__), "[link]") & fox_sudo())
 async def pinterest(client, message):
+    message = await who_message(client, message)
     await message.edit("<emoji id='5397755618750653196'>🌟</emoji> Searching..")
     link = message.command[1]
     try:

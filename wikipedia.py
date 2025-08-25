@@ -1,13 +1,14 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
 install_library("wikipedia") 
 import wikipedia
 
-@Client.on_message(fox_command("wiki", "Wikipedia", os.path.basename(__file__), "[RU/EN] [WORD]") & filters.me)
+@Client.on_message(fox_command("wiki", "Wikipedia", os.path.basename(__file__), "[RU/EN] [WORD]") & fox_sudo())
 async def wiki(client, message):
+    message = await who_message(client, message)
     try:
         lang = message.command[1]
         user_request = " ".join(message.command[2:])

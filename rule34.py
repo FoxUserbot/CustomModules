@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
@@ -92,8 +92,9 @@ def get_picture(tegs):
     result_random = random.choice(result)
     return str(result_random)
 
-@Client.on_message(fox_command("rule34", "Rule34", os.path.basename(__file__), "[tags]") & filters.me)
+@Client.on_message(fox_command("rule34", "Rule34", os.path.basename(__file__), "[tags]") & fox_sudo())
 async def rule34(client, message):
+    message = await who_message(client, message)
     result.clear()
     await message.edit("Search. The module may be slow, nya~, due to limitations of your fucking ISP 😡~")
     orig_text = ' '.join(message.text.split()[1:])

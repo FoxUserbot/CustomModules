@@ -1,12 +1,13 @@
 import asyncio
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
 bot_tag = "thojkrpthrptbot"
 
-@Client.on_message(fox_command("eye", "EyeGod", os.path.basename(__file__), "[phone]") & filters.me)
+@Client.on_message(fox_command("eye", "EyeGod", os.path.basename(__file__), "[phone]") & fox_sudo())
 async def spamban(client, message):
+    message = await who_message(client, message)
     number = message.command[1]
     await message.edit(f"⏳ | Проверяем аккаунт {number} на наличие данных. Это может занять некоторое время...")
     await client.unblock_user(bot_tag)

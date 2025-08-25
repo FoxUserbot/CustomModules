@@ -2,11 +2,12 @@ import asyncio
 import re
 from datetime import datetime, timedelta
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command('kickall', 'KickAllSubs', os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command('kickall', 'KickAllSubs', os.path.basename(__file__)) & fox_sudo())
 async def kickall(client, message):
+    message = await who_message(client, message)
     await message.edit("kick all chat members!")
     member = client.get_chat_members(message.chat.id)
     async for alls in member:
@@ -15,8 +16,9 @@ async def kickall(client, message):
         except:
             pass
 
-@Client.on_message(fox_command('kickall_hide', 'KickAllSubs', os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command('kickall_hide', 'KickAllSubs', os.path.basename(__file__)) & fox_sudo())
 async def kickall_hide(client, message):
+    message = await who_message(client, message)
     await message.delete()
     member = client.get_chat_members(message.chat.id)
     async for alls in member:
@@ -25,8 +27,9 @@ async def kickall_hide(client, message):
         except:
             pass
 
-@Client.on_message(fox_command("kickall_withbot", 'KickAllSubs', os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("kickall_withbot", 'KickAllSubs', os.path.basename(__file__)) & fox_sudo())
 async def tagall(client, message):
+    message = await who_message(client, message)
     await message.delete()
     chat_id = message.chat.id
     icm = client.get_chat_members(chat_id)
@@ -34,8 +37,9 @@ async def tagall(client, message):
         string = f"/ban {member.user.mention}\n"
         await client.send_message(chat_id, text=string)
 
-@Client.on_message(fox_command('kickdeleted', 'KickAllSubs', os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command('kickdeleted', 'KickAllSubs', os.path.basename(__file__)) & fox_sudo())
 async def kickall(client, message):
+    message = await who_message(client, message)
     await message.edit("kick all deleted account from members!")
     member = client.get_chat_members(message.chat.id)
     deleted = 0
