@@ -13,7 +13,7 @@ def users():
         ignore.append(int(list))
     return ignore
 
-@Client.on_message(filters.private & ~fox_sudo() & ~filters.bot)
+@Client.on_message(filters.private & ~filters.me & ~filters.bot)
 async def aws(client, message):
     ids = message.from_user.id
     if Path(f"userdata/autoanswer").is_file():

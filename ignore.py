@@ -4,7 +4,7 @@ import os
 
 i = filters.user([])
 
-@Client.on_message(i & ~fox_sudo())
+@Client.on_message(i & ~filters.me)
 async def ignored(client, message):
     await message.delete()
 

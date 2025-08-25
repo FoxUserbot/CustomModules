@@ -12,7 +12,7 @@ afk_info = {
 
 is_afk = filters.create(lambda _, __, ___: afk_info["is_afk"])
 
-@Client.on_message(is_afk & ~fox_sudo() & ((filters.private & ~filters.bot) | (filters.mentioned & filters.group)))
+@Client.on_message(is_afk & ~filters.me & ((filters.private & ~filters.bot) | (filters.mentioned & filters.group)))
 async def afk_handler(_, message: types.Message):
     end = datetime.datetime.now().replace(microsecond=0)
     afk_time = end - afk_info["start"]
