@@ -7,7 +7,7 @@ import random
 import os
 import asyncio
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 
 currentUsername = ""
 try:
@@ -122,8 +122,9 @@ try:
 except KeyboardInterrupt:
     raise ValueError
 
-@Client.on_message(fox_command("nowplayed", "LastFM", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("nowplayed", "LastFM", os.path.basename(__file__)) & fox_sudo())
 async def nowplayed(client, message):
+    message = await who_message(client, message)
     try:
         currentSong = open("userdata/lastfm_current_song", "r+", encoding="utf-8").readline() 
         await message.edit(f"[🎶] Now playing: `{currentSong}`")
@@ -136,8 +137,9 @@ async def nowplayed(client, message):
         except Exception as e:
             await message.edit(f"[❌] Ошибка при создании файла: {e}")
 
-@Client.on_message(fox_command("lastfm_config", "LastFM", os.path.basename(__file__), "[LastFM Nickname] [Username/ID Channel] [ID Message] [Autostart: True/False]") & filters.me)
+@Client.on_message(fox_command("lastfm_config", "LastFM", os.path.basename(__file__), "[LastFM Nickname] [Username/ID Channel] [ID Message] [Autostart: True/False]") & fox_sudo())
 async def lastfm_config(client, message):
+    message = await who_message(client, message)
     
     open("userdata/lastfm_username", "w+", encoding="utf-8")
     username = message.text.split()[1]
@@ -173,8 +175,9 @@ async def lastfm_config(client, message):
     
     await message.edit(f"LastFM: {username}\nChannel: {channel_telegram}\nID: {id_in_channel_telegram}\nAutostart: {autostart}")
 
-@Client.on_message((fox_command("autoplayed", "LastFM", os.path.basename(__file__)) & filters.me) | (filters.command("last_fm_trigger_start", prefixes="") & filters.me & filters.chat("me")))
+@Client.on_message((fox_command("autoplayed", "LastFM", os.path.basename(__file__)) & fox_sudo()) | (filters.command("last_fm_trigger_start", prefixes="") & fox_sudo() & filters.chat("me")))
 async def autoplayed(client, message):
+    message = await who_message(client, message)
     await message.edit("STARTED!")
     await asyncio.sleep(5)
     await message.delete()

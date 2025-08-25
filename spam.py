@@ -1,10 +1,11 @@
 import asyncio
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("stspam", "Spam", os.path.basename(__file__), "[count] [delay] [sticker_id]") & filters.me)
+@Client.on_message(fox_command("stspam", "Spam", os.path.basename(__file__), "[count] [delay] [sticker_id]") & fox_sudo())
 async def sticker_spam(client, message):
+    message = await who_message(client, message)
     if not message.text.split("stspam", maxsplit=1)[1]:
         await message.edit("<i>Error</i>")
 
@@ -17,8 +18,9 @@ async def sticker_spam(client, message):
         await client.send_sticker(message.chat.id, sticker)
         await asyncio.sleep(sleep)
 
-@Client.on_message(fox_command("spam", "Spam", os.path.basename(__file__), "[count] [delay] [text]") & filters.me)
+@Client.on_message(fox_command("spam", "Spam", os.path.basename(__file__), "[count] [delay] [text]") & fox_sudo())
 async def spam(client, message):
+    message = await who_message(client, message)
     if not message.text.split("spam", maxsplit=1)[1]:
         await message.edit("<i>Error</i>")
         return
@@ -36,7 +38,8 @@ async def spam(client, message):
         await client.send_message(message.chat.id, text)
         await asyncio.sleep(sleep)
 
-@Client.on_message(fox_command("help_spam", "Spam", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("help_spam", "Spam", os.path.basename(__file__)) & fox_sudo())
 async def help_spam(client, message):
+    message = await who_message(client, message)
     await message.edit(f""".stspam [ID] [Count] [Delay] - Start sticker spam.
 ```.spam [Count] [Delay] [Text]``` -Start message spam.""")

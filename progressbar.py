@@ -1,10 +1,11 @@
 import time
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("progressbar", "Progressbar", os.path.basename(__file__), "[text]") & filters.me)
+@Client.on_message(fox_command("progressbar", "Progressbar", os.path.basename(__file__), "[text]") & fox_sudo())
 async def progressbar(client, message):
+    message = await who_message(client, message)
     try:
         text = ' '.join(message.text.split()[1:])
 

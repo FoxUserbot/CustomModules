@@ -2,11 +2,12 @@ from datetime import datetime
 import asyncio
 from pyrogram import Client, filters
 from pyrogram.enums import ChatType
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command(["stat", "stats"], "Statistic", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command(["stat", "stats"], "Statistic", os.path.basename(__file__)) & fox_sudo())
 async def stats(client, message):
+    message = await who_message(client, message)
     await message.edit("Parsing stats...")
     start = datetime.now()
     u = 0

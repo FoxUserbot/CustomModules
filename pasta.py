@@ -1,15 +1,16 @@
 from random import randint
 from time import sleep
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
 install_library('faker')
 from faker import Faker
 
-@Client.on_message(fox_command("doxx", "Doxx", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("doxx", "Doxx", os.path.basename(__file__)) & fox_sudo())
 async def hack(client, message):
+    message = await who_message(client, message)
     fake = Faker('ru_RU')
     await message.edit('Доксим тя пидор')
     if randint(0, 1) == 0:

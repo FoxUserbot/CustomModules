@@ -1,16 +1,18 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("del", "Purge", os.path.basename(__file__), "[reply]") & filters.me)
+@Client.on_message(fox_command("del", "Purge", os.path.basename(__file__), "[reply]") & fox_sudo())
 async def delete_messages(client, message):
+    message = await who_message(client, message)
     if message.reply_to_message:
         message_id = message.reply_to_message.id
         await client.delete_messages(message.chat.id, message_id)
     await message.delete()
 
-@Client.on_message(fox_command("purge", "Purge", os.path.basename(__file__), "[reply/group_id] [start_id] [stop_id]") & filters.me)
+@Client.on_message(fox_command("purge", "Purge", os.path.basename(__file__), "[reply/group_id] [start_id] [stop_id]") & fox_sudo())
 async def purge(client, message):
+    message = await who_message(client, message)
     try:
         try:
             g = message.command[1]

@@ -1,6 +1,6 @@
 import asyncio
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 import re
 
@@ -24,8 +24,9 @@ def normalize_query(query: str) -> str:
 
     return query
 
-@Client.on_message(fox_command("sher", "Sherlock", os.path.basename(__file__), "[любой запрос]") & filters.me)
+@Client.on_message(fox_command("sher", "Sherlock", os.path.basename(__file__), "[любой запрос]") & fox_sudo())
 async def sherlock_search(client, message):
+    message = await who_message(client, message)
     if len(message.command) < 2:
         await message.edit(
             "❗ | Укажите запрос для поиска.\n\n"

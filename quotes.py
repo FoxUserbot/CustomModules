@@ -1,10 +1,11 @@
 import asyncio
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("q", "Quotes", os.path.basename(__file__), "[reply]") & filters.me)
+@Client.on_message(fox_command("q", "Quotes", os.path.basename(__file__), "[reply]") & fox_sudo())
 async def quotly(client, message):
+    message = await who_message(client, message)
     if not message.reply_to_message:
         await message.edit("Reply to message")
         return

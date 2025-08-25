@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 
 if not os.path.exists("userdata/autoanswer_DB"):
     os.mkdir("userdata/autoanswer_DB")
@@ -13,7 +13,7 @@ def users():
         ignore.append(int(list))
     return ignore
 
-@Client.on_message(filters.private & ~filters.me & ~filters.bot)
+@Client.on_message(filters.private & ~fox_sudo() & ~filters.bot)
 async def aws(client, message):
     ids = message.from_user.id
     if Path(f"userdata/autoanswer").is_file():
@@ -31,8 +31,9 @@ async def aws(client, message):
     else:
         pass
 
-@Client.on_message(fox_command("aws", "AutoAnswer", os.path.basename(__file__), "[ID/Username] [Post ID]") & filters.me)
+@Client.on_message(fox_command("aws", "AutoAnswer", os.path.basename(__file__), "[ID/Username] [Post ID]") & fox_sudo())
 async def aws_start(client, message):
+    message = await who_message(client, message)
     try:
         chat_ids = message.text.split()[1]
         message_ids = message.text.split()[2]

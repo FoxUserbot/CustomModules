@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
@@ -7,8 +7,9 @@ install_library("requests")
 import requests
 import io
 
-@Client.on_message(fox_command("webshot", "Webshot", os.path.basename(__file__), "[url]") & filters.me)
+@Client.on_message(fox_command("webshot", "Webshot", os.path.basename(__file__), "[url]") & fox_sudo())
 async def webshot(client, message):
+    message = await who_message(client, message)
     try:
         user_link = (message.command[1].replace("https://", "").replace("http://", ""))
         await message.edit("Try create screenshot...")

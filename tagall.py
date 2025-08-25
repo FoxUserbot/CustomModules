@@ -1,10 +1,11 @@
 import asyncio
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("tagallone", "Tagall", os.path.basename(__file__), "[delay] [text]") & filters.me)
+@Client.on_message(fox_command("tagallone", "Tagall", os.path.basename(__file__), "[delay] [text]") & fox_sudo())
 async def tagallone(client, message):
+    message = await who_message(client, message)
     try:
         delay = message.command[1]
     except:
@@ -29,8 +30,9 @@ async def tagallone(client, message):
             delay = float(delay)
         await asyncio.sleep(delay)
 
-@Client.on_message(fox_command("tagall", "Tagall", os.path.basename(__file__), "[delay] [text]") & filters.me)
+@Client.on_message(fox_command("tagall", "Tagall", os.path.basename(__file__), "[delay] [text]") & fox_sudo())
 async def tagall(client, message):
+    message = await who_message(client, message)
     maxTag = 5
     try:
         delay = message.command[1]

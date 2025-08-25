@@ -1,10 +1,11 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("user_info", "Userinfo", os.path.basename(__file__), "[user_id/@username]") & filters.me)
+@Client.on_message(fox_command("user_info", "Userinfo", os.path.basename(__file__), "[user_id/@username]") & fox_sudo())
 async def get_user_inf(client: Client, message: Message):
+    message = await who_message(client, message)
     await message.edit("<code>Receiving the information...</code>")
 
     if len(message.text.split()) >= 2:
@@ -41,8 +42,9 @@ async def get_user_inf(client: Client, message: Message):
 </b>"""
     await message.edit(user_info)
 
-@Client.on_message(fox_command("user_info_full", "Userinfo", os.path.basename(__file__), "[user_id/@username]") & filters.me)
+@Client.on_message(fox_command("user_info_full", "Userinfo", os.path.basename(__file__), "[user_id/@username]") & fox_sudo())
 async def get_full_user_inf(client: Client, message: Message):
+    message = await who_message(client, message)
     await message.edit("<code>Receiving the information...</code>")
 
     if len(message.text.split()) >= 2:

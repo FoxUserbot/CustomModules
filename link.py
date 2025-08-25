@@ -1,9 +1,10 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("link", "LinkInText", os.path.basename(__file__), "[url] [text]") & filters.me)
+@Client.on_message(fox_command("link", "LinkInText", os.path.basename(__file__), "[url] [text]") & fox_sudo())
 async def link(client, message):
+    message = await who_message(client, message)
     try:
         link = message.command[1]
         text = " ".join(message.command[2:])

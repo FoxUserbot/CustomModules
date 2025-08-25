@@ -1,11 +1,12 @@
 from random import randint, choice
 from time import sleep
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
-@Client.on_message(fox_command("stream", "Stream", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("stream", "Stream", os.path.basename(__file__)) & fox_sudo())
 async def stream_kangel(client, message):
+    message = await who_message(client, message)
     actions = ['💵 Получаем донат!','🛍 Делаем обзор...','💻 Играем в игру','🍰 Кушаем...','💊 Принимаем Эмбиан...']
     try:
         await message.edit('💅 Перевоплощаемся!')

@@ -1,7 +1,7 @@
 # https://github.com/ArThirtyFour
 
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 import os
 
 emoji_list = {
@@ -83,8 +83,9 @@ emoji_list = {
     'z': '<emoji id=5330309934825351007>🔤</emoji>'
 }
 
-@Client.on_message(fox_command("prem_text", "PremiumText", os.path.basename(__file__), "[text]") & filters.me)
+@Client.on_message(fox_command("prem_text", "PremiumText", os.path.basename(__file__), "[text]") & fox_sudo())
 async def prem_text(client, message):
+    message = await who_message(client, message)
     full_text = ' '.join(message.text.lower().split()[1:])
     result = ''
     await client.edit_message_text(message.chat.id, message.id, "Generating text..")

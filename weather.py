@@ -1,5 +1,5 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
@@ -19,8 +19,9 @@ def get_pic(city):
             pic.write(block)
         return file_name
 
-@Client.on_message(fox_command("weather", "Weather", os.path.basename(__file__), "[city]") & filters.me)
+@Client.on_message(fox_command("weather", "Weather", os.path.basename(__file__), "[city]") & fox_sudo())
 async def weather(client, message):
+    message = await who_message(client, message)
     try:
         city = message.command[1]
         await message.edit("Check weather...")

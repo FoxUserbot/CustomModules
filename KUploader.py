@@ -2,15 +2,16 @@
 import io
 import json
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
 install_library("requests -U")
 import requests
 
-@Client.on_message(fox_command("catbox", "Uploader", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("catbox", "Uploader", os.path.basename(__file__)) & fox_sudo())
 async def catbox_handler(client, message):
+    message = await who_message(client, message)
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
     if not file:
@@ -28,8 +29,9 @@ async def catbox_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(fox_command("envs", "Uploader", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("envs", "Uploader", os.path.basename(__file__)) & fox_sudo())
 async def envs_handler(client, message):
+    message = await who_message(client, message)
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
     if not file:
@@ -43,8 +45,9 @@ async def envs_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(fox_command("kappa", "Uploader", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("kappa", "Uploader", os.path.basename(__file__)) & fox_sudo())
 async def kappa_handler(client, message):
+    message = await who_message(client, message)
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
     if not file:
@@ -60,8 +63,9 @@ async def kappa_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(fox_command("0x0", "Uploader", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("0x0", "Uploader", os.path.basename(__file__)) & fox_sudo())
 async def oxo_handler(client, message):
+    message = await who_message(client, message)
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
     if not file:
@@ -79,8 +83,9 @@ async def oxo_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(fox_command("x0", "Uploader", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("x0", "Uploader", os.path.basename(__file__)) & fox_sudo())
 async def x0_handler(client, message):
+    message = await who_message(client, message)
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
     if not file:
@@ -94,8 +99,9 @@ async def x0_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(fox_command("tmpfiles", "Uploader", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("tmpfiles", "Uploader", os.path.basename(__file__)) & fox_sudo())
 async def tmpfiles_handler(client, message):
+    message = await who_message(client, message)
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
     if not file:
@@ -114,8 +120,9 @@ async def tmpfiles_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(fox_command("pomf", "Uploader", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("pomf", "Uploader", os.path.basename(__file__)) & fox_sudo())
 async def pomf_handler(client, message):
+    message = await who_message(client, message)
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
     if not file:
@@ -134,8 +141,9 @@ async def pomf_handler(client, message):
     except Exception as e:
         await message.edit("❌ <b>Error while uploading: {}</b>".format(str(e)))
 
-@Client.on_message(fox_command("bash", "Uploader", os.path.basename(__file__)) & filters.me)
+@Client.on_message(fox_command("bash", "Uploader", os.path.basename(__file__)) & fox_sudo())
 async def bash_handler(client, message):
+    message = await who_message(client, message)
     await message.edit("⚡ <b>Uploading file...</b>")
     file = await get_file(client, message)
     if not file:

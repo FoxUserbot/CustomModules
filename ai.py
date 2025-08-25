@@ -3,7 +3,7 @@ import requests
 import asyncio
 from prefix import my_prefix
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
@@ -47,8 +47,9 @@ def get_proxy():
         proxylist.extend(proxies_list)
         return proxies_list
 
-@Client.on_message(fox_command("ai", "AI", os.path.basename(__file__), "[Gemini/DeepSeek/Qwen] [message]") & filters.me)
+@Client.on_message(fox_command("ai", "AI", os.path.basename(__file__), "[Gemini/DeepSeek/Qwen] [message]") & fox_sudo())
 async def ai(client, message):
+    message = await who_message(client, message)
     try:
         module = message.text.split()[1].lower()
         model = modules.get(module)

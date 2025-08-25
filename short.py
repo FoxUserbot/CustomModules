@@ -1,13 +1,14 @@
 from pyrogram import Client, filters
-from command import fox_command
+from command import fox_command, fox_sudo, who_message
 from requirements_installer import install_library
 import os
 
 install_library("requests")
 import requests
 
-@Client.on_message(fox_command("short", "ShortURL", os.path.basename(__file__), "[Reply/Link]") & filters.me)
+@Client.on_message(fox_command("short", "ShortURL", os.path.basename(__file__), "[Reply/Link]") & fox_sudo())
 async def shorten_link_command(client, message):
+    message = await who_message(client, message)
     try:
         await message.edit("Shorting...")
         if message.reply_to_message:
