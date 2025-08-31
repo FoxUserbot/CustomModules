@@ -5,8 +5,8 @@ import os
 
 bot_tag = "thojkrpthrptbot"
 
-@Client.on_message(fox_command("eye", "EyeGod", os.path.basename(__file__), "[phone]") & fox_sudo())
-async def spamban(client, message):
+@Client.on_message(fox_command(["eye", "osint"], "LeakOsint", os.path.basename(__file__), "[phone]") & fox_sudo())
+async def LeakOsint(client, message):
     message = await who_message(client, message)
     number = message.command[1]
     await message.edit(f"⏳ | Проверяем аккаунт {number} на наличие данных. Это может занять некоторое время...")
