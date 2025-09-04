@@ -43,7 +43,7 @@ def get_proxy():
 
 def get_picture(tegs):
     tags = (tegs).replace(" ", "%20")
-    url = f"http://api.rule34.xxx/index.php?page=dapi&s=post&q=index&tags={tags}"
+    url = f"http://api.rule34.xxx/index.php?page=dapi&s=post&q=index&tags={tags}&api_key=d82f6db279ce94313e629e791533d456a4309dfeb528ddab6eee4b7472156f0def07ebfd3e64b9dddbf0d3b78f227ba8a5f386533ef1ccb1377d8a97481811dc&user_id=5255009"
     try:
         print("[DEBUG] No proxy")
         response = requests.get(url, timeout=5)
