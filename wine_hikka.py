@@ -1,11 +1,9 @@
-from pyrogram import Client, filters
-from command import fox_command, fox_sudo, who_message
+from pyrogram import Client
+from command import fox_command, fox_sudo, who_message , my_prefix
 import base64
 import os
 import shutil
-from modules.plugins_1system.restarter import restart
 from requirements_installer import install_library
-from prefix import my_prefix
 install_library('openai requests')
 from openai import AsyncOpenAI
 import requests
@@ -84,12 +82,18 @@ async def wine_hikka(client, message):
 
     await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Generating module...")
     answer = await create_module(file_content, module_name)
-    file_path = f"modules/plugins_2custom/{module_name}.py"
+    
     if answer is not None:
+        file_path = f"modules/loaded/{module_name}.py"
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(answer)
-        await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Module generated at <code>{file_path}</code>")
-        await restart(message, restart_type="restart")
+    
+        await client.send_document(
+            message.chat.id,
+            file_path,
+            caption=f"<emoji id='5283051451889756068'>🦊</emoji> | Generated module: <code>{module_name}</code>",
+        )
+        os.remove(file_path)
     else:
         await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Error generating module :(")
 

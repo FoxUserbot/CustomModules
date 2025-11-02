@@ -1,9 +1,8 @@
 import base64
 import requests
 import asyncio
-from prefix import my_prefix
 from pyrogram import Client, filters
-from command import fox_command, fox_sudo, who_message
+from command import fox_command, fox_sudo, who_message, my_prefix
 from requirements_installer import install_library
 import os
 
