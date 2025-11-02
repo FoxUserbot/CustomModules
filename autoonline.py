@@ -1,6 +1,6 @@
 import asyncio
 from pyrogram import Client, filters
-from modules.plugins_1system.restarter import restart
+from modules.core.restarter import restart
 from command import fox_command, fox_sudo, who_message
 import os
 

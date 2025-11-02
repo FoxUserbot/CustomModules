@@ -1,10 +1,9 @@
 import asyncio
 import random
 import os
-from prefix import my_prefix
 from pyrogram import Client, filters
-from command import fox_command, fox_sudo, who_message
-from modules.plugins_1system.restarter import restart 
+from command import fox_command, fox_sudo, who_message, my_prefix
+from modules.core.restarter import restart 
 
 def load_config():
     try:
