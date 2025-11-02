@@ -1,50 +1,21 @@
 import base64
-import requests
+
 import asyncio
-from pyrogram import Client, filters
+from pyrogram import Client
 from command import fox_command, fox_sudo, who_message, my_prefix
 from requirements_installer import install_library
 import os
 
-install_library('openai') 
-from openai import AsyncOpenAI, APIError
-
+install_library('requests') 
+import requests
 public_key = "c2stb3ItdjEtNjg1YzZiMDc2YjJhNDE4M2VkNTUzOWIyMTk3ZWY4MTk3YjkxYTE1ZDMxOTAxZjQ2YTQ5MTk0NTFjYzkxYzRmZQ=="
 
-proxylist = ["127.0.0.1:2080"]
 
 modules = {
-    "deepseek": "deepseek/deepseek-chat:free",
+    "deepseek": "deepseek/deepseek-chat-v3-0324:free",
     "gemini": "google/gemini-2.0-flash-exp:free",
-    "qwen": "qwen/qwq-32b:free:free",
+    "qwen": "qwen/qwen3-235b-a22b:free",
 }
-
-def get_proxy():
-    if proxylist:
-        return proxylist
-    else:
-        temp_proxy = []
-        try:
-            url = "https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies&protocol=http&proxy_format=ipport&format=text&timeout=3000"
-            response = requests.get(url, timeout=2)
-            proxies_text = response.text
-            temp_proxies_list = [x.strip() for x in proxies_text.split("\n") if x.strip()]
-            for _ in temp_proxies_list:
-                temp_proxy.append(_)
-        except:
-            pass
-        try:
-            url = "http://rootjazz.com/proxies/proxies.txt"
-            response = requests.get(url, timeout=4)
-            proxies_text = response.text
-            temp_proxies_list = [x.strip() for x in proxies_text.split("\n") if x.strip()]
-            for _ in temp_proxies_list:
-                temp_proxy.append(_)
-        except:
-            pass
-        proxies_list = temp_proxy[:200]
-        proxylist.extend(proxies_list)
-        return proxies_list
 
 @Client.on_message(fox_command("ai", "AI", os.path.basename(__file__), "[Gemini/DeepSeek/Qwen] [message]") & fox_sudo())
 async def ai(client, message):
@@ -60,56 +31,24 @@ async def ai(client, message):
         await message.edit("🤖 Processing request...")
         message_for_da = " ".join(message.text.split()[2:])
         
-        result = ""
-        retry_count = 1
+        key = str(base64.b64decode(public_key).decode('utf-8'))
+        url = "https://openrouter.ai/api/v1/chat/completions"
+        payload = {
+            "model": model,
+            "messages": [{"role": "user", "content": message_for_da}]
+        }
+        headers = {
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json"
+        }
 
-        try:
-            client_ai = AsyncOpenAI(
-                base_url="https://openrouter.ai/api/v1",
-                api_key=str(base64.b64decode(public_key).decode('utf-8'))
-            )
-            
-            response = await client_ai.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": message_for_da}]
-            )
-            result = response.choices[0].message.content
-            if len(result) == 0:
-                raise ValueError
-        except:
-            while len(result) == 0:
-                try:
-                    proxies = get_proxy()
-                    proxy = proxies[0]
+        def do_call():
+            r = requests.post(url, json=payload, headers=headers, timeout=25)
+            r.raise_for_status()
+            return r.json()
 
-                    if not proxy:
-                        await message.edit("❌ No working proxies available!")
-                        return
-
-                    await message.edit(f"⚠️ Trying proxy №{retry_count}")
-                    async with httpx.AsyncClient(proxy=f"http://{proxy}", timeout=25.0) as session:
-                        client_ai = AsyncOpenAI(
-                            base_url="https://openrouter.ai/api/v1",
-                            api_key=str(base64.b64decode(public_key).decode('utf-8')),
-                            http_client=session
-                        )
-                        
-                        response = await client_ai.chat.completions.create(
-                            model=model,
-                            messages=[{"role": "user", "content": message_for_da}]
-                        )
-                        result = response.choices[0].message.content
-                except Exception as e:
-                    print(f"ERROR: {e}")
-                    print(f"[DEBUG] Proxy failed: {proxy}")
-                    if proxy in proxylist:
-                        proxylist.remove(proxy)
-                    retry_count += 1
-                    await asyncio.sleep(1)  
-
-            if not result:
-                await message.edit("❌ Failed to get response after retries!")
-                return
+        data = await asyncio.to_thread(do_call)
+        result = data["choices"][0]["message"]["content"]
 
         await message.edit(f"""👤 Prompt: {message_for_da}
 📔 Model: {module}
@@ -118,7 +57,7 @@ async def ai(client, message):
 
     except IndexError:
         await message.edit(f"❌ Не указаны данные! Используйте: {my_prefix()}ai <модель> <запрос>")
-    except APIError as e:
+    except requests.exceptions.RequestException as e:
         await message.edit(f"❌ Ошибка API OpenRouter: {e}")
     except Exception as e:
         await message.edit(f"❌ Произошла непредвиденная ошибка: {e}")

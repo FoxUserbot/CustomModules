@@ -1,5 +1,5 @@
 from pyrogram import Client
-from command import fox_command, fox_sudo, who_message , my_prefix
+from command import fox_command, fox_sudo, who_message, my_prefix
 import base64
 import os
 import shutil
