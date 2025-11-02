@@ -9,7 +9,7 @@ import psutil
 
 @Client.on_message(fox_command("sysinfo", "SystemInfo", os.path.basename(__file__), "") & fox_sudo())
 async def sysinfo(client, message):
-    message = await who_message(client, message, message.reply_to_message)
+    message = await who_message(client, message)
     try:
         memory_info = psutil.virtual_memory()
         total_memory = memory_info.total / (1024 ** 3)  
