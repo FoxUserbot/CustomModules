@@ -12,9 +12,9 @@ public_key = "c2stb3ItdjEtNjg1YzZiMDc2YjJhNDE4M2VkNTUzOWIyMTk3ZWY4MTk3YjkxYTE1ZD
 
 
 modules = {
-    "deepseek": "deepseek/deepseek-chat:free",
+    "deepseek": "deepseek/deepseek-chat-v3-0324:free",
     "gemini": "google/gemini-2.0-flash-exp:free",
-    "qwen": "qwen/qwq-32b:free:free",
+    "qwen": "qwen/qwen3-235b-a22b:free",
 }
 
 @Client.on_message(fox_command("ai", "AI", os.path.basename(__file__), "[Gemini/DeepSeek/Qwen] [message]") & fox_sudo())
