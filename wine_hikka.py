@@ -1,5 +1,5 @@
 from pyrogram import Client
-from command import fox_command, fox_sudo, who_message, my_prefix
+from command import fox_command, fox_sudo, who_message, my_prefix, get_text
 import base64
 import os
 import shutil
@@ -7,6 +7,60 @@ from requirements_installer import install_library
 install_library('openai requests')
 from openai import AsyncOpenAI
 import requests
+
+filename = os.path.basename(__file__)
+Module_Name = 'WineHikka'
+
+LANGUAGES = {
+    "en": {
+        "loading_reply": "<emoji id='5283051451889756068'>🦊</emoji> | Loading module from reply...",
+        "loading_url": "<emoji id='5283051451889756068'>🦊</emoji> | Loading module from URL: {url}",
+        "error_status": "<emoji id='5283051451889756068'>🦊</emoji> | Error loading module from URL: {status}",
+        "error_request": "<emoji id='5283051451889756068'>🦊</emoji> | Error loading module from URL: {error}",
+        "no_input": "<emoji id='5283051451889756068'>🦊</emoji> | Reply to a module file or provide a link!",
+        "no_content": "<emoji id='5283051451889756068'>🦊</emoji> | Failed to get module content.",
+        "generating": "<emoji id='5283051451889756068'>🦊</emoji> | Generating module...",
+        "generated": "<emoji id='5283051451889756068'>🦊</emoji> | Generated module: <code>{module_name}</code>",
+        "error_generate": "<emoji id='5283051451889756068'>🦊</emoji> | Error generating module :(",
+        "current_model": "<emoji id='5283051451889756068'>🦊</emoji> | **Current model:** `{model}`\n\n**Usage:**\n`{prefix}wine_config [model_name]`\n\n**Example models:**\n• `qwen/qwen2.5-72b-instruct`\n• `anthropic/claude-3.5-sonnet`\n• `meta-llama/llama-3.1-8b-instruct`\n• `google/gemini-pro-1.5`\n\n <a href='https://openrouter.ai/models?max_price=0'><b>You can get models here</b></a>",
+        "no_model": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Please specify a model name! \n You can get models <a href='https://openrouter.ai/models?max_price=0'>here</a></b>",
+        "not_free": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Please specify a free model! \n You can get models <a href='https://openrouter.ai/models?max_price=0'>here</a></b>",
+        "success": "<emoji id='5283051451889756068'>🦊</emoji> | **Model successfully changed!**\n\n**New model:** `{model}`\n\nNow all requests will use this model.",
+        "error_save": "<emoji id='5283051451889756068'>🦊</emoji> | **Error saving model:**\n`{error}`"
+    },
+    "ru": {
+        "loading_reply": "<emoji id='5283051451889756068'>🦊</emoji> | Загрузка модуля из ответа...",
+        "loading_url": "<emoji id='5283051451889756068'>🦊</emoji> | Загрузка модуля с URL: {url}",
+        "error_status": "<emoji id='5283051451889756068'>🦊</emoji> | Ошибка загрузки модуля с URL: {status}",
+        "error_request": "<emoji id='5283051451889756068'>🦊</emoji> | Ошибка загрузки модуля с URL: {error}",
+        "no_input": "<emoji id='5283051451889756068'>🦊</emoji> | Ответьте на файл модуля или предоставьте ссылку!",
+        "no_content": "<emoji id='5283051451889756068'>🦊</emoji> | Не удалось получить содержимое модуля.",
+        "generating": "<emoji id='5283051451889756068'>🦊</emoji> | Генерирование модуля...",
+        "generated": "<emoji id='5283051451889756068'>🦊</emoji> | Сгенерированный модуль: <code>{module_name}</code>",
+        "error_generate": "<emoji id='5283051451889756068'>🦊</emoji> | Ошибка при генерировании модуля :(",
+        "current_model": "<emoji id='5283051451889756068'>🦊</emoji> | **Текущая модель:** `{model}`\n\n**Использование:**\n`{prefix}wine_config [имя_модели]`\n\n**Примеры моделей:**\n• `qwen/qwen2.5-72b-instruct`\n• `anthropic/claude-3.5-sonnet`\n• `meta-llama/llama-3.1-8b-instruct`\n• `google/gemini-pro-1.5`\n\n <a href='https://openrouter.ai/models?max_price=0'><b>Вы можете получить модели здесь</b></a>",
+        "no_model": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Укажите имя модели! \n Вы можете получить модели <a href='https://openrouter.ai/models?max_price=0'>здесь</a></b>",
+        "not_free": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Укажите бесплатную модель! \n Вы можете получить модели <a href='https://openrouter.ai/models?max_price=0'>здесь</a></b>",
+        "success": "<emoji id='5283051451889756068'>🦊</emoji> | **Модель успешно изменена!**\n\n**Новая модель:** `{model}`\n\nТеперь все запросы будут использовать эту модель.",
+        "error_save": "<emoji id='5283051451889756068'>🦊</emoji> | **Ошибка сохранения модели:**\n`{error}`"
+    },
+    "ua": {
+        "loading_reply": "<emoji id='5283051451889756068'>🦊</emoji> | Завантаження модуля з відповіді...",
+        "loading_url": "<emoji id='5283051451889756068'>🦊</emoji> | Завантаження модуля з URL: {url}",
+        "error_status": "<emoji id='5283051451889756068'>🦊</emoji> | Помилка завантаження модуля з URL: {status}",
+        "error_request": "<emoji id='5283051451889756068'>🦊</emoji> | Помилка завантаження модуля з URL: {error}",
+        "no_input": "<emoji id='5283051451889756068'>🦊</emoji> | Відповідьте на файл модуля або надайте посилання!",
+        "no_content": "<emoji id='5283051451889756068'>🦊</emoji> | Не вдалося отримати вміст модуля.",
+        "generating": "<emoji id='5283051451889756068'>🦊</emoji> | Генерування модуля...",
+        "generated": "<emoji id='5283051451889756068'>🦊</emoji> | Згенерований модуль: <code>{module_name}</code>",
+        "error_generate": "<emoji id='5283051451889756068'>🦊</emoji> | Помилка при генеруванні модуля :(",
+        "current_model": "<emoji id='5283051451889756068'>🦊</emoji> | **Поточна модель:** `{model}`\n\n**Використання:**\n`{prefix}wine_config [назва_моделі]`\n\n**Приклади моделей:**\n• `qwen/qwen2.5-72b-instruct`\n• `anthropic/claude-3.5-sonnet`\n• `meta-llama/llama-3.1-8b-instruct`\n• `google/gemini-pro-1.5`\n\n <a href='https://openrouter.ai/models?max_price=0'><b>Ви можете отримати моделі тут</b></a>",
+        "no_model": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Вкажіть назву моделі! \n Ви можете отримати моделі <a href='https://openrouter.ai/models?max_price=0'>тут</a></b>",
+        "not_free": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Вкажіть безплатну модель! \n Ви можете отримати моделі <a href='https://openrouter.ai/models?max_price=0'>тут</a></b>",
+        "success": "<emoji id='5283051451889756068'>🦊</emoji> | **Модель успішно змінена!**\n\n**Нова модель:** `{model}`\n\nТепер усі запити будуть використовувати цю модель.",
+        "error_save": "<emoji id='5283051451889756068'>🦊</emoji> | **Помилка збереження моделі:**\n`{error}`"
+    }
+}
 
 def get_wine_model():
     try:
@@ -45,13 +99,14 @@ async def create_module(module_text, module_name):
             )
     return response.choices[0].message.content.replace("```python", "").replace("```", "")
 
-@Client.on_message(fox_command("wine_hikka", "WineHikka", os.path.basename(__file__), "[Link/Reply]") & fox_sudo())
+@Client.on_message(fox_command("wine_hikka", Module_Name, filename, "[Link/Reply]") & fox_sudo())
 async def wine_hikka(client, message):
     message = await who_message(client, message)
     file_content = None
     module_name = None
     if message.reply_to_message and message.reply_to_message.document:
-        await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Loading module from reply...")
+        loading_text = get_text("wine_hikka", "loading_reply", LANGUAGES=LANGUAGES)
+        await message.edit(loading_text)
         file = await client.download_media(message.reply_to_message.document)
         with open(file, "r", encoding="utf-8") as f:
             file_content = f.read()
@@ -59,28 +114,34 @@ async def wine_hikka(client, message):
         if os.path.exists("downloads"):
             shutil.rmtree("downloads")
         module_name = message.reply_to_message.document.file_name.replace(".py", "")
-    elif len(message.command) > 1 and (message.command[1].startswith("http") or message.command[1].startswith("https")):
-        url = message.command[1]
-        await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Loading module from URL: {url}")
+    elif len(message.command) > 1 and (message.text.split()[1].startswith("http") or message.text.split()[1].startswith("https")):
+        url = message.text.split()[1]
+        loading_text = get_text("wine_hikka", "loading_url", LANGUAGES=LANGUAGES, url=url)
+        await message.edit(loading_text)
         try:
-            response = requests.get(url)
+            response = requests.get(url,headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"},verify=False)
             if response.status_code != 200:
-                await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Error loading module from URL: {response.status_code}")
+                error_text = get_text("wine_hikka", "error_status", LANGUAGES=LANGUAGES, status=response.status_code)
+                await message.edit(error_text)
                 return
             file_content = response.text
             module_name = url.split("/")[-1].replace(".py", "")
         except requests.exceptions.RequestException as e:
-            await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Error loading module from URL: {e}")
+            error_text = get_text("wine_hikka", "error_request", LANGUAGES=LANGUAGES, error=str(e))
+            await message.edit(error_text)
             return
     else:
-        await message.edit("<emoji id='5283051451889756068'>🦊</emoji> | Reply to a module file or provide a link!")
+        no_input_text = get_text("wine_hikka", "no_input", LANGUAGES=LANGUAGES)
+        await message.edit(no_input_text)
         return
 
     if file_content is None:
-        await message.edit("<emoji id='5283051451889756068'>🦊</emoji> | Failed to get module content.")
+        no_content_text = get_text("wine_hikka", "no_content", LANGUAGES=LANGUAGES)
+        await message.edit(no_content_text)
         return
 
-    await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Generating module...")
+    generating_text = get_text("wine_hikka", "generating", LANGUAGES=LANGUAGES)
+    await message.edit(generating_text)
     answer = await create_module(file_content, module_name)
     
     if answer is not None:
@@ -88,30 +149,35 @@ async def wine_hikka(client, message):
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(answer)
     
+        caption_text = get_text("wine_hikka", "generated", LANGUAGES=LANGUAGES, module_name=module_name)
         await client.send_document(
             message.chat.id,
             file_path,
-            caption=f"<emoji id='5283051451889756068'>🦊</emoji> | Generated module: <code>{module_name}</code>",
+            caption=caption_text,
         )
         os.remove(file_path)
     else:
-        await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | Error generating module :(")
+        error_text = get_text("wine_hikka", "error_generate", LANGUAGES=LANGUAGES)
+        await message.edit(error_text)
 
-@Client.on_message(fox_command("wine_config", "WineHikka", os.path.basename(__file__), "[Model]") & fox_sudo())
+@Client.on_message(fox_command("wine_config", Module_Name, filename, "[Model]") & fox_sudo())
 async def wine_config(client, message):
     message = await who_message(client, message)
     if len(message.command) < 2:
         current_model = get_wine_model()
-        await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | **Current model:** `{current_model}`\n\n**Usage:**\n`{my_prefix()}wine_config [model_name]`\n\n**Example models:**\n• `qwen/qwen2.5-72b-instruct`\n• `anthropic/claude-3.5-sonnet`\n• `meta-llama/llama-3.1-8b-instruct`\n• `google/gemini-pro-1.5`\n\n <a href='https://openrouter.ai/models?max_price=0'><b>You can get models here</b></a>")
-    new_model = message.command[1]
-    if not new_model or new_model.strip() == "":
-        await message.edit("<emoji id='5283051451889756068'>🦊</emoji> | <b>Please specify a model name! \n You can get models <a href='https://openrouter.ai/models?max_price=0'>here</a></b>")
+        current_text = get_text("wine_hikka", "current_model", LANGUAGES=LANGUAGES, model=current_model, prefix=my_prefix())
+        await message.edit(current_text)
         return
-    if not "free" in new_model:
-        await message.edit("<emoji id='5283051451889756068'>🦊</emoji> | <b>Please specify a free model! \n You can get models <a href='https://openrouter.ai/models?max_price=0'>here</a>    </b>")
+    
+    new_model = message.text.split()[1]
+    if not new_model or new_model.strip() == "":
+        no_model_text = get_text("wine_hikka", "no_model", LANGUAGES=LANGUAGES)
+        await message.edit(no_model_text)
         return
     try:
         save_wine_model(new_model)
-        await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | **Model successfully changed!**\n\n**New model:** `{new_model}`\n\nNow all requests will use this model.")
+        success_text = get_text("wine_hikka", "success", LANGUAGES=LANGUAGES, model=new_model)
+        await message.edit(success_text)
     except Exception as e:
-        await message.edit(f"<emoji id='5283051451889756068'>🦊</emoji> | **Error saving model:**\n`{str(e)}`")
+        error_text = get_text("wine_hikka", "error_save", LANGUAGES=LANGUAGES, error=str(e))
+        await message.edit(error_text)
