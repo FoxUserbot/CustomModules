@@ -27,17 +27,19 @@ async def id_handler(client, message):
     message = await who_message(client, message)
     ids = []
     
+    # ID владельца
     me = await client.get_me()
     ids.append(f"<b>Ваш ID:</b> <code>{me.id}</code>")
     
+    # Если личные сообщения
     if message.chat.type == ChatType.PRIVATE:
         ids.append(f"<b>Чат ID:</b> <code>{message.chat.id}</code>")
         return await message.edit("\n".join(ids))
     
-
+    # ID чата
     ids.append(f"<b>Чат ID:</b> <code>{message.chat.id}</code>")
     
-
+    # ID пользователя из ответа
     if message.reply_to_message and message.reply_to_message.from_user.id != me.id:
         user_id = message.reply_to_message.from_user.id
         ids.append(f"<b>ID пользователя:</b> <code>{user_id}</code>")
@@ -53,7 +55,7 @@ async def rights_handler(client, message):
     args = message.text.split()[1:] if len(message.command) > 1 else []
     user = None
     
-
+    # Поиск пользователя по аргументам или ответу
     for arg in args:
         if arg.startswith("-u") or arg.startswith("username"):
             user = arg.split(" ", 1)[1] if " " in arg else None
@@ -66,12 +68,14 @@ async def rights_handler(client, message):
         return await message.edit("<b>❌ Укажите пользователя!</b>")
     
     try:
+        # Получаем информацию о пользователе
         user_obj = await client.get_users(user)
         chat_member = await client.get_chat_member(message.chat.id, user_obj.id)
         
         if chat_member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
             return await message.edit(f"<b>❌ {user_obj.first_name} не является администратором!</b>")
         
+        # Собираем права
         rights = []
         if hasattr(chat_member, 'privileges'):
             privileges = chat_member.privileges
@@ -197,6 +201,7 @@ async def ban_handler(client, message):
     user_id = message.reply_to_message.from_user.id
     args = message.text.split()[1:] if len(message.command) > 1 else []
     
+    # Определяем время бана
     ban_time = None
     time_text = ""
     
@@ -283,6 +288,7 @@ async def mute_handler(client, message):
     user_id = message.reply_to_message.from_user.id
     args = message.text.split()[1:] if len(message.command) > 1 else []
     
+    # Определяем время мута
     mute_time = None
     time_text = ""
     
@@ -512,7 +518,8 @@ async def roles_handler(client, message):
         if role_name not in roles:
             return await message.edit(f"<b>❌ Роль {role_name} не найдена!</b>")
         
-
+        # Здесь можно добавить детальную информацию о правах роли
+        # Для простоты выводим только число прав
         await message.edit(f"<b>Роль {role_name}:</b>\n<b>Права:</b> <code>{roles[role_name]}</code>")
 
 @Client.on_message(fox_command("chatinfo", "ChatModule", os.path.basename(__file__)) & fox_sudo())
@@ -524,15 +531,18 @@ async def chatinfo_handler(client, message):
     try:
         chat = await client.get_chat(message.chat.id)
         
+        # Получаем количество участников
         members_count = 0
         online_count = 0
         async for _ in client.get_chat_members(chat.id):
             members_count += 1
         
+        # Получаем администраторов
         admins_count = 0
         async for _ in client.get_chat_members(chat.id, filter=ChatMembersFilter.ADMINISTRATORS):
             admins_count += 1
         
+        # Формируем информацию
         info_text = f"""<b>📊 Информация о чате:</b>
 
 🆔 <b>ID:</b> <code>{chat.id}</code>

@@ -2,7 +2,7 @@
 # ©️ qq_shark, 2025
 # 🌐 https://github.com/qqshark/Modules/blob/main/media2gif.py
 # Licensed under GNU AGPL v3.0
-# Ported with Wine Hikka
+# Ported With Wine Hikka
 import os
 import subprocess
 import asyncio
