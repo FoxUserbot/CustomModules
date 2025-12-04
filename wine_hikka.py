@@ -6,7 +6,10 @@ import shutil
 from requirements_installer import install_library
 install_library('openai requests')
 from openai import AsyncOpenAI
+from openai import RateLimitError, APIError, APIConnectionError, APITimeoutError
 import requests
+import asyncio
+import time
 
 filename = os.path.basename(__file__)
 Module_Name = 'WineHikka'
@@ -22,6 +25,10 @@ LANGUAGES = {
         "generating": "<emoji id='5283051451889756068'>🦊</emoji> | Generating module...",
         "generated": "<emoji id='5283051451889756068'>🦊</emoji> | Generated module: <code>{module_name}</code>",
         "error_generate": "<emoji id='5283051451889756068'>🦊</emoji> | Error generating module :(",
+        "rate_limit": "<emoji id='5283051451889756068'>🦊</emoji> | Rate limit exceeded. Please try again later or add your own API key.",
+        "api_error": "<emoji id='5283051451889756068'>🦊</emoji> | API error: {error}",
+        "connection_error": "<emoji id='5283051451889756068'>🦊</emoji> | Connection error. Please check your internet connection.",
+        "timeout_error": "<emoji id='5283051451889756068'>🦊</emoji> | Request timeout. Please try again.",
         "current_model": "<emoji id='5283051451889756068'>🦊</emoji> | **Current model:** `{model}`\n\n**Usage:**\n`{prefix}wine_config [model_name]`\n\n**Example models:**\n• `qwen/qwen2.5-72b-instruct`\n• `anthropic/claude-3.5-sonnet`\n• `meta-llama/llama-3.1-8b-instruct`\n• `google/gemini-pro-1.5`\n\n <a href='https://openrouter.ai/models?max_price=0'><b>You can get models here</b></a>",
         "no_model": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Please specify a model name! \n You can get models <a href='https://openrouter.ai/models?max_price=0'>here</a></b>",
         "not_free": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Please specify a free model! \n You can get models <a href='https://openrouter.ai/models?max_price=0'>here</a></b>",
@@ -38,6 +45,10 @@ LANGUAGES = {
         "generating": "<emoji id='5283051451889756068'>🦊</emoji> | Генерирование модуля...",
         "generated": "<emoji id='5283051451889756068'>🦊</emoji> | Сгенерированный модуль: <code>{module_name}</code>",
         "error_generate": "<emoji id='5283051451889756068'>🦊</emoji> | Ошибка при генерировании модуля :(",
+        "rate_limit": "<emoji id='5283051451889756068'>🦊</emoji> | Превышен лимит запросов. Попробуйте позже или добавьте свой API ключ.",
+        "api_error": "<emoji id='5283051451889756068'>🦊</emoji> | Ошибка API: {error}",
+        "connection_error": "<emoji id='5283051451889756068'>🦊</emoji> | Ошибка подключения. Проверьте интернет-соединение.",
+        "timeout_error": "<emoji id='5283051451889756068'>🦊</emoji> | Таймаут запроса. Попробуйте снова.",
         "current_model": "<emoji id='5283051451889756068'>🦊</emoji> | **Текущая модель:** `{model}`\n\n**Использование:**\n`{prefix}wine_config [имя_модели]`\n\n**Примеры моделей:**\n• `qwen/qwen2.5-72b-instruct`\n• `anthropic/claude-3.5-sonnet`\n• `meta-llama/llama-3.1-8b-instruct`\n• `google/gemini-pro-1.5`\n\n <a href='https://openrouter.ai/models?max_price=0'><b>Вы можете получить модели здесь</b></a>",
         "no_model": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Укажите имя модели! \n Вы можете получить модели <a href='https://openrouter.ai/models?max_price=0'>здесь</a></b>",
         "not_free": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Укажите бесплатную модель! \n Вы можете получить модели <a href='https://openrouter.ai/models?max_price=0'>здесь</a></b>",
@@ -54,6 +65,10 @@ LANGUAGES = {
         "generating": "<emoji id='5283051451889756068'>🦊</emoji> | Генерування модуля...",
         "generated": "<emoji id='5283051451889756068'>🦊</emoji> | Згенерований модуль: <code>{module_name}</code>",
         "error_generate": "<emoji id='5283051451889756068'>🦊</emoji> | Помилка при генеруванні модуля :(",
+        "rate_limit": "<emoji id='5283051451889756068'>🦊</emoji> | Перевищено ліміт запитів. Спробуйте пізніше або додайте свій API ключ.",
+        "api_error": "<emoji id='5283051451889756068'>🦊</emoji> | Помилка API: {error}",
+        "connection_error": "<emoji id='5283051451889756068'>🦊</emoji> | Помилка підключення. Перевірте інтернет-з'єднання.",
+        "timeout_error": "<emoji id='5283051451889756068'>🦊</emoji> | Таймаут запиту. Спробуйте знову.",
         "current_model": "<emoji id='5283051451889756068'>🦊</emoji> | **Поточна модель:** `{model}`\n\n**Використання:**\n`{prefix}wine_config [назва_моделі]`\n\n**Приклади моделей:**\n• `qwen/qwen2.5-72b-instruct`\n• `anthropic/claude-3.5-sonnet`\n• `meta-llama/llama-3.1-8b-instruct`\n• `google/gemini-pro-1.5`\n\n <a href='https://openrouter.ai/models?max_price=0'><b>Ви можете отримати моделі тут</b></a>",
         "no_model": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Вкажіть назву моделі! \n Ви можете отримати моделі <a href='https://openrouter.ai/models?max_price=0'>тут</a></b>",
         "not_free": "<emoji id='5283051451889756068'>🦊</emoji> | <b>Вкажіть безплатну модель! \n Ви можете отримати моделі <a href='https://openrouter.ai/models?max_price=0'>тут</a></b>",
@@ -93,11 +108,43 @@ async def create_module(module_text, module_name):
                 base_url="https://openrouter.ai/api/v1",
                 api_key=str(base64.b64decode("c2stb3ItdjEtNjg1YzZiMDc2YjJhNDE4M2VkNTUzOWIyMTk3ZWY4MTk3YjkxYTE1ZDMxOTAxZjQ2YTQ5MTk0NTFjYzkxYzRmZQ==").decode('utf-8'))
             )
-    response = await client_ai.chat.completions.create(
+    
+    max_retries = 5
+    base_delay = 1
+    
+    for attempt in range(max_retries):
+        try:
+            response = await client_ai.chat.completions.create(
                 model=get_wine_model(),
                 messages=[{"role": "user", "content": prompt}]
             )
-    return response.choices[0].message.content.replace("```python", "").replace("```", "")
+            return response.choices[0].message.content.replace("```python", "").replace("```", "")
+        
+        except RateLimitError as e:
+            if attempt < max_retries - 1:
+                delay = base_delay * (2 ** attempt) + (time.time() % 1)
+                await asyncio.sleep(delay)
+                continue
+            else:
+                return None
+        
+        except APIConnectionError as e:
+            if attempt < max_retries - 1:
+                delay = base_delay * (2 ** attempt)
+                await asyncio.sleep(delay)
+                continue
+            else:
+                return None
+        
+        except APITimeoutError as e:
+            if attempt < max_retries - 1:
+                delay = base_delay * (2 ** attempt)
+                await asyncio.sleep(delay)
+                continue
+            else:
+                return None
+    
+    return None 
 
 @Client.on_message(fox_command("wine_hikka", Module_Name, filename, "[Link/Reply]") & fox_sudo())
 async def wine_hikka(client, message):
@@ -142,7 +189,29 @@ async def wine_hikka(client, message):
 
     generating_text = get_text("wine_hikka", "generating", LANGUAGES=LANGUAGES)
     await message.edit(generating_text)
-    answer = await create_module(file_content, module_name)
+    
+    try:
+        answer = await create_module(file_content, module_name)
+    except RateLimitError:
+        error_text = get_text("wine_hikka", "rate_limit", LANGUAGES=LANGUAGES)
+        await message.edit(error_text)
+        return
+    except APIConnectionError:
+        error_text = get_text("wine_hikka", "connection_error", LANGUAGES=LANGUAGES)
+        await message.edit(error_text)
+        return
+    except APITimeoutError:
+        error_text = get_text("wine_hikka", "timeout_error", LANGUAGES=LANGUAGES)
+        await message.edit(error_text)
+        return
+    except APIError as e:
+        error_text = get_text("wine_hikka", "api_error", LANGUAGES=LANGUAGES, error=str(e))
+        await message.edit(error_text)
+        return
+    except Exception as e:
+        error_text = get_text("wine_hikka", "error_generate", LANGUAGES=LANGUAGES)
+        await message.edit(error_text)
+        return
     
     if answer is not None:
         file_path = f"modules/loaded/{module_name}.py"
