@@ -31,17 +31,13 @@ LANGUAGES = {
 }
 
 async def get_image_url(api_url: str) -> str | None:
+    print(api_url)
     try:
         response = await asyncio.to_thread(requests.get, api_url)
         response.raise_for_status()
         data = response.json()
-        if "url" in data:
-            return data["url"]
-        elif "images" in data and data["images"]:
-            return data["images"][0]["url"]
-        elif "results" in data and data["results"]:
-            return data["results"][0]["url"]
-        return None
+        print(data)
+        return data["items"][0]["url"]
     except:
         return None
 
@@ -58,7 +54,7 @@ async def wafcmd(client: Client, message):
         return
 
     arg = "waifu" if arg not in categories else arg
-    image_url = await get_image_url(f"https://api.waifu.im/search?included_tags={quote_plus(arg)}")
+    image_url = await get_image_url(f"https://api.waifu.im/images?IncludedTags={arg}")
     if not image_url:
         text = get_text("KOTaiwaifu", "no_image", LANGUAGES=LANGUAGES)
         await message.edit(text)
