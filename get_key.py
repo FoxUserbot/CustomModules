@@ -1,6 +1,5 @@
-# Module by AR34 for FoxUserBot
-# Powered by EtoNeYa Project
 import asyncio
+
 from pyrogram import Client
 from command import fox_command, fox_sudo, who_message , get_text
 import base64
@@ -17,24 +16,30 @@ headers = {
 
 LANGUAGES = { 
     "en": {
-        "need_link": "<emoji id='5265027299509553081'>🩷</emoji> Give me a subscription link!",
-        "searching": "<emoji id='5264949504766921879'>🌐</emoji> Searching...",
-        "empty_response": "<emoji id='5264980750653997092'>⚰️</emoji> Empty response from the link.",
-        "fetch_decode_fail": "<emoji id='5264980750653997092'>⚰️</emoji> Failed to fetch or decode subscription.",
-        "caption": "<emoji id='5267392860122006833'>📝</emoji> Here is the file",
+        "need_link": "<b><emoji id='5210952531676504517'>❌</emoji> Give me a subscription link!</b>",
+        "searching": "<b><emoji id='5264727218734524899'>🔄</emoji> Searching subscription...</b>",
+        "decrypting": "<b><emoji id='5264727218734524899'>🔄</emoji> Decrypting happ:// link...</b>",
+        "empty_response": "<b><emoji id='5210952531676504517'>❌</emoji> Empty response from the link.</b>",
+        "decrypt_fail": "<b><emoji id='5210952531676504517'>❌</emoji> Failed to decrypt happ:// link.</b>",
+        "fetch_decode_fail": "<b><emoji id='5210952531676504517'>❌</emoji> Failed to fetch or decode subscription.</b>",
+        "caption": "<emoji id='5267392860122006833'>📝</emoji> | FoxUserbot",
     },
     "ru": {
-        "need_link": "<emoji id='5265027299509553081'>🩷</emoji> Дай ссылку на подписку!",
-        "searching": "<emoji id='5264949504766921879'>🌐</emoji> Ищу подписку...",
-        "empty_response": "<emoji id='5264980750653997092'>⚰️</emoji> Пустой ответ по ссылке.",
-        "fetch_decode_fail": "<emoji id='5264980750653997092'>⚰️</emoji> Не удалось получить или декодировать подписку.",
+        "need_link": "<b><emoji id='5210952531676504517'>❌</emoji> Дай ссылку на подписку!</b>",
+        "searching": "<b><emoji id='5264727218734524899'>🔄</emoji> Ищу подписку...</b>",
+        "decrypting": "<b><emoji id='5264727218734524899'>🔄</emoji> Расшифровываю happ:// ссылку...</b>",
+        "empty_response": "<b><emoji id='5210952531676504517'>❌</emoji> Пустой ответ по ссылке.</b>",
+        "decrypt_fail": "<b><emoji id='5210952531676504517'>❌</emoji> Не удалось расшифровать happ:// ссылку.</b>",
+        "fetch_decode_fail": "<b><emoji id='5210952531676504517'>❌</emoji> Не удалось получить или декодировать подписку.</b>",
         "caption": "<emoji id='5267392860122006833'>📝</emoji> Лови файл",
     },
     "ua": {
-        "need_link": "<emoji id='5265027299509553081'>🩷</emoji> Дай посилання на підписку!",
-        "searching": "<emoji id='5264949504766921879'>🌐</emoji> Шукаю підписку...",
-        "empty_response": "<emoji id='5264980750653997092'>⚰️</emoji> Порожня відповідь за посиланням.",
-        "fetch_decode_fail": "<emoji id='5264980750653997092'>⚰️</emoji> Не вдалося отримати або декодувати підписку.",
+        "need_link": "<b><emoji id='5210952531676504517'>❌</emoji> Дай посилання на підписку!</b>",
+        "searching": "<b><emoji id='5264727218734524899'>🔄</emoji> Шукаю підписку...</b>",
+        "decrypting": "<b><emoji id='5264727218734524899'>🔄</emoji> Розшифровую happ:// посилання...</b>",
+        "empty_response": "<b><emoji id='5210952531676504517'>❌</emoji> Порожня відповідь за посиланням.</b>",
+        "decrypt_fail": "<b><emoji id='5210952531676504517'>❌</emoji> Не вдалося розшифрувати happ:// посилання.</b>",
+        "fetch_decode_fail": "<b><emoji id='5210952531676504517'>❌</emoji> Не вдалося отримати або декодувати підписку.</b>",
         "caption": "<emoji id='5267392860122006833'>📝</emoji> Лови файл",
     }
 }
@@ -50,6 +55,29 @@ async def get_config(client, message):
         await message.edit(get_text("get_keys", "need_link", LANGUAGES=LANGUAGES))
         return
     await message.edit(get_text("get_keys", "searching", LANGUAGES=LANGUAGES))
+
+    if arg.startswith("happ://crypt"):
+        await message.edit(get_text("get_keys", "decrypting", LANGUAGES=LANGUAGES))
+        try:
+            unhapp_headers = {"Content-Type": "application/json"}
+            resp = await asyncio.to_thread(
+                requests.post,
+                "https://unhapp.xyz/api.php",
+                headers=unhapp_headers,
+                json={"url": arg},
+                timeout=30,
+            )
+            resp.raise_for_status()
+            decrypted = (resp.text or "").strip()
+            if not decrypted.startswith("http"):
+                await message.edit(get_text("get_keys", "decrypt_fail", LANGUAGES=LANGUAGES))
+                return
+            arg = decrypted
+            await message.edit(get_text("get_keys", "searching", LANGUAGES=LANGUAGES))
+        except Exception:
+            await message.edit(get_text("get_keys", "decrypt_fail", LANGUAGES=LANGUAGES))
+            return
+
     try:
         req = await asyncio.to_thread(requests.get, arg, headers=headers, timeout=30)
         req.raise_for_status()
